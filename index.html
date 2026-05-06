@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Забележителни точки в триъгълник — урок за 8. клас</title>
+
+<!-- Потискане на Tailwind CDN предупреждение -->
+<script>
+  (function() {
+    const originalWarn = console.warn;
+    console.warn = function(...args) {
+      const msg = args.join(' ');
+      if (msg.includes('cdn.tailwindcss.com') || msg.includes('should not be used in production')) {
+        return;
+      }
+      originalWarn.apply(console, args);
+    };
+  })();
+</script>
+
+<!-- React 18 -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<!-- Babel -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  body { margin: 0; font-family: 'Fraunces', serif; }
+  #root { min-height: 100vh; }
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #1a1815;
+    background: #f4f1ea;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<div id="root">
+  <div class="loading">◆ ЗАРЕЖДАНЕ НА УРОКА...</div>
+</div>
+
+<script type="text/babel" data-type="module">
+const { useState, useRef, useEffect } = React;
+
+/* ============================================================
+   ИНТЕРАКТИВЕН УРОК ПО ГЕОМЕТРИЯ — 8. КЛАС
+   Заглавие: Забележителни точки в триъгълник
+   ============================================================ */
+
+function TriangleLesson() {
+  const [activeSection, setActiveSection] = useState('intro');
+
+  const sections = [
+    { id: 'intro',        label: 'Въведение',      num: '00', color: '#1a1815' },
+    { id: 'centroid',     label: 'Медицентър',     num: '01', color: '#e63946' },
+    { id: 'circumcenter', label: 'Описана',        num: '02', color: '#1d6fb8' },
+    { id: 'incenter',     label: 'Вписана',        num: '03', color: '#5fb83a' },
+    { id: 'excircles',    label: 'Външно вписани', num: '04', color: '#f59100' },
+    { id: 'orthocenter',  label: 'Ортоцентър',     num: '05', color: '#a435c4' },
+    { id: 'euler',        label: 'Права на Ойлер', num: '06', color: '#1a1815' },
+    { id: 'special',      label: 'Спец. случаи',   num: '07', color: '#f59100' },
+    { id: 'quiz',         label: 'Тест',           num: '08', color: '#1a1815' },
+  ];
+
+  const scrollTo = (id) => {
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f4f1ea] text-[#1a1815]">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+        .font-display  { font-family: 'Fraunces', serif; font-variation-settings: 'opsz' 144, 'SOFT' 50; }
+        .font-serif-it { font-family: 'Instrument Serif', serif; font-style: italic; }
+        .font-mono     { font-family: 'JetBrains Mono', monospace; }
+
+        .grain {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        .paper-texture {
+          background-color: #f4f1ea;
+          background-image:
+            radial-gradient(circle at 20% 30%, rgba(230, 57, 70, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(29, 111, 184, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 50% 100%, rgba(245, 145, 0, 0.05) 0%, transparent 60%);
+        }
+
+        @keyframes pulse-point {
+          0%, 100% { transform: scale(1);    opacity: 1; }
+          50%      { transform: scale(1.18); opacity: 0.75; }
+        }
+        .pulse-vertex {
+          animation: pulse-point 2.4s ease-in-out infinite;
+          transform-origin: center;
+          transform-box: fill-box;
+        }
+
+        @keyframes tooltip-pop {
+          0% { opacity: 0; transform: scale(0.9) translateY(4px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-tooltip-pop {
+          animation: tooltip-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .text-crisp-3d {
+          text-shadow: 
+            1px 1px 0 var(--shadow-color),
+            2px 2px 0 var(--shadow-color),
+            3px 3px 0 var(--shadow-color),
+            4px 4px 0 var(--shadow-color),
+            5px 5px 0 var(--shadow-color);
+        }
+
+        .draggable-handle         { cursor: grab; }
+        .draggable-handle:active  { cursor: grabbing; }
+
+        /* ============== 3D БУТОНИ ============== */
+        .btn-3d {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          color: #1a1815;
+          background: linear-gradient(180deg, #ffffff 0%, #ebe5d6 100%);
+          border: 1.5px solid #1a1815;
+          border-radius: 999px;
+          padding: 10px 18px;
+          cursor: pointer;
+          transition: all 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
+          box-shadow:
+            0 4px 0 0 #1a1815,
+            0 5px 8px -1px rgba(26, 24, 21, 0.35),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+            inset 0 -2px 4px 0 rgba(139, 90, 43, 0.12);
+          transform: translateY(0);
+          user-select: none;
+          white-space: nowrap;
+        }
+        .btn-3d:hover {
+          transform: translateY(-2px);
+          box-shadow:
+            0 6px 0 0 #1a1815,
+            0 8px 14px -2px rgba(26, 24, 21, 0.4),
+            inset 0 1px 0 0 rgba(255, 255, 255, 1),
+            inset 0 -2px 4px 0 rgba(139, 90, 43, 0.18);
+        }
+        .btn-3d:active {
+          transform: translateY(3px);
+          box-shadow:
+            0 1px 0 0 #1a1815,
+            0 1px 2px 0 rgba(26, 24, 21, 0.25),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+            inset 0 -1px 2px 0 rgba(139, 90, 43, 0.2);
+        }
+        .btn-3d.active {
+          background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark, #0f0d0a) 100%);
+          color: #ffffff;
+          border-color: var(--accent-dark, #0f0d0a);
+          box-shadow:
+            0 4px 0 0 var(--accent-dark, #0f0d0a),
+            0 5px 10px -1px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+            inset 0 -2px 4px 0 rgba(0, 0, 0, 0.25);
+        }
+        .btn-3d.active:hover {
+          box-shadow:
+            0 6px 0 0 var(--accent-dark, #0f0d0a),
+            0 8px 14px -2px rgba(0, 0, 0, 0.45),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .btn-3d-num {
+          display: inline-block;
+          width: 22px;
+          height: 22px;
+          line-height: 22px;
+          text-align: center;
+          background: var(--accent);
+          color: #ffffff;
+          border-radius: 50%;
+          margin-right: 8px;
+          font-size: 10px;
+          font-weight: 700;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            inset 0 -2px 3px rgba(0, 0, 0, 0.3);
+        }
+        .btn-3d.active .btn-3d-num {
+          background: #ffffff;
+          color: var(--accent);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.8),
+            inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ============== ГОЛЯМ 3D БУТОН ============== */
+        .btn-3d-large {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.18em;
+          color: #ffffff;
+          background: linear-gradient(180deg, var(--accent, #e63946) 0%, var(--accent-dark, #b22a36) 100%);
+          border: 2px solid var(--accent-dark, #b22a36);
+          border-radius: 8px;
+          padding: 18px 32px;
+          cursor: pointer;
+          transition: all 140ms cubic-bezier(0.34, 1.56, 0.64, 1);
+          box-shadow:
+            0 6px 0 0 var(--accent-dark, #b22a36),
+            0 8px 18px -2px rgba(26, 24, 21, 0.45),
+            inset 0 2px 0 0 rgba(255, 255, 255, 0.3),
+            inset 0 -3px 6px 0 rgba(0, 0, 0, 0.2);
+          user-select: none;
+        }
+        .btn-3d-large:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow:
+            0 8px 0 0 var(--accent-dark, #b22a36),
+            0 12px 22px -2px rgba(26, 24, 21, 0.5),
+            inset 0 2px 0 0 rgba(255, 255, 255, 0.4),
+            inset 0 -3px 6px 0 rgba(0, 0, 0, 0.25);
+        }
+        .btn-3d-large:active:not(:disabled) {
+          transform: translateY(5px);
+          box-shadow:
+            0 1px 0 0 var(--accent-dark, #b22a36),
+            0 2px 4px 0 rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+        }
+        .btn-3d-large:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          box-shadow: 0 3px 0 0 var(--accent-dark, #b22a36);
+        }
+
+        /* ============== МАЛЪК TOGGLE 3D БУТОН ============== */
+        .btn-3d-mini {
+          position: relative;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          padding: 8px 14px;
+          border-radius: 6px;
+          border: 2px solid var(--mini-color, #1a1815);
+          background: linear-gradient(180deg, #ffffff 0%, #ebe5d6 100%);
+          color: var(--mini-color, #1a1815);
+          cursor: pointer;
+          transition: all 100ms cubic-bezier(0.34, 1.56, 0.64, 1);
+          box-shadow:
+            0 3px 0 0 var(--mini-color-dark, #1a1815),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+          user-select: none;
+        }
+        .btn-3d-mini:hover {
+          transform: translateY(-1px);
+          box-shadow:
+            0 4px 0 0 var(--mini-color-dark, #1a1815),
+            0 5px 8px -1px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 0 rgba(255, 255, 255, 1);
+        }
+        .btn-3d-mini:active {
+          transform: translateY(2px);
+          box-shadow:
+            0 1px 0 0 var(--mini-color-dark, #1a1815),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+        }
+        .btn-3d-mini.active {
+          background: linear-gradient(180deg, var(--mini-color, #1a1815) 0%, var(--mini-color-dark, #0a0908) 100%);
+          color: #ffffff;
+          box-shadow:
+            0 1px 0 0 var(--mini-color-dark, #0a0908),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+            inset 0 -2px 4px 0 rgba(0, 0, 0, 0.3);
+          transform: translateY(2px);
+        }
+
+        /* ============== БУТОН ОТГОВОР ТЕСТ ============== */
+        .btn-quiz-3d {
+          position: relative;
+          font-family: 'Fraunces', serif;
+          text-align: left;
+          padding: 14px 18px;
+          background: #fdfcf7;
+          border: 2px solid #1a1815;
+          border-radius: 8px;
+          color: #1a1815;
+          cursor: pointer;
+          transition: all 120ms ease;
+          box-shadow: 0 4px 0 0 rgba(26, 24, 21, 0.15);
+          user-select: none;
+        }
+        .btn-quiz-3d:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 0 0 rgba(26, 24, 21, 0.25);
+          background: #ffffff;
+        }
+        .btn-quiz-3d:active:not(:disabled) {
+          transform: translateY(2px);
+          box-shadow: 0 2px 0 0 rgba(26, 24, 21, 0.15);
+        }
+        .btn-quiz-3d.selected {
+          background: #e6ebf0;
+          border-color: #1d6fb8;
+          transform: translateY(2px);
+          box-shadow: 0 2px 0 0 rgba(29, 111, 184, 0.4);
+        }
+        .btn-quiz-3d.correct {
+          background: #eaf5eb;
+          border-color: #5fb83a;
+          color: #1a1815;
+          transform: translateY(2px);
+          box-shadow: 0 2px 0 0 rgba(95, 184, 58, 0.4);
+        }
+        .btn-quiz-3d.wrong {
+          background: #fdf0f0;
+          border-color: #e63946;
+          color: #1a1815;
+          transform: translateY(2px);
+          box-shadow: 0 2px 0 0 rgba(230, 57, 70, 0.4);
+        }
+      `}</style>
+
+      {/* =========================================================
+          HEADER — навигация с 3D бутони
+          ========================================================= */}
+      <header className="sticky top-0 z-50 bg-[#f4f1ea]/92 backdrop-blur-md border-b-2 border-[#1a1815]/15">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+          <div className="flex items-baseline gap-3 shrink-0">
+            <span className="font-mono text-xs tracking-widest uppercase font-bold">Геометрия</span>
+            <span className="font-display text-lg italic">— 8. клас</span>
+          </div>
+          <div className="hidden lg:flex gap-2 flex-wrap justify-end">
+            {sections.map(s => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className={`btn-3d ${activeSection === s.id ? 'active' : ''}`}
+                style={{ '--accent': s.color, '--accent-dark': darken(s.color) }}
+              >
+                <span className="btn-3d-num" style={{ '--accent': s.color }}>{s.num}</span>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Мобилна навигация */}
+        <div className="lg:hidden px-6 pb-3 overflow-x-auto">
+          <div className="flex gap-2 min-w-max">
+            {sections.map(s => (
+              <button
+                key={s.id}
+                onClick={() => scrollTo(s.id)}
+                className={`btn-3d ${activeSection === s.id ? 'active' : ''}`}
+                style={{ '--accent': s.color, '--accent-dark': darken(s.color) }}
+              >
+                <span className="btn-3d-num" style={{ '--accent': s.color }}>{s.num}</span>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* =========================================================
+          HERO — заглавие
+          ========================================================= */}
+      <section id="intro" className="paper-texture grain min-h-screen flex items-center relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6 py-20 w-full flex flex-col relative z-10">
+
+          {/* ============== ИЗОБРАЖЕНИЕ ZTT И КРЕДИТИ (МАКСИМАЛЕН РАЗМЕР) ============== */}
+          <div className="mb-10 w-full">
+            <img 
+              src="ZTT.png" 
+              alt="ZTT" 
+              className="w-full h-auto object-contain drop-shadow-2xl"
+              style={{ maxHeight: '75vh' }}
+              onError={(e) => { e.target.style.display = 'none'; }} 
+            />
+            <div className="mt-6 p-5 bg-[#fdfcf7] border-l-4 border-[#1d6fb8] shadow-[0_4px_10px_rgba(0,0,0,0.05)] rounded-r-xl w-full">
+              <div className="font-display text-[16px] md:text-lg leading-relaxed text-[#1a1815]">
+                <span className="opacity-80 font-serif-it italic mr-2">✦</span>
+                <strong>Идея и педагогически решения:</strong> Валя Витковска<br/>
+                <span className="opacity-80 font-serif-it italic mr-2">✦</span>
+                <strong>Реализация:</strong> Claude, Gemini
+              </div>
+            </div>
+          </div>
+
+          <div className="font-mono text-xs tracking-[0.3em] uppercase mb-8 opacity-65 font-bold">
+            ◆ урок по геометрия · 8. клас
+          </div>
+
+          {/* Заглавие на един ред - кристално ясно 3D със солидни ярки цветове */}
+          <h1 className="font-display font-light leading-[1.3] tracking-tight pb-4 whitespace-normal md:whitespace-nowrap"
+              style={{ fontSize: 'clamp(1.4rem, 3.8vw, 3.2rem)' }}>
+            <span className="text-crisp-3d font-display font-bold text-[#ff2a5f]" 
+                  style={{ '--shadow-color': '#800020' }}>Забележителни</span>
+            {' '}
+            <span className="text-crisp-3d font-serif-it italic text-[#a435c4]" 
+                  style={{ '--shadow-color': '#4a0060' }}>точки в</span>
+            {' '}
+            <span className="text-crisp-3d font-display font-bold text-[#00b4d8]" 
+                  style={{ '--shadow-color': '#004050' }}>триъгълник</span>
+          </h1>
+
+          <p className="font-display text-xl md:text-2xl mt-8 max-w-xl leading-relaxed opacity-85">
+            В сърцето на всеки триъгълник живеят няколко точки — невидими координатори
+            на неговата геометрия. Този урок ще ти ги покаже <span className="font-serif-it">в движение</span>.
+          </p>
+
+          <div className="flex gap-3 mt-12 font-mono text-xs flex-wrap">
+            <Pill color="#e63946">медицентър</Pill>
+            <Pill color="#1d6fb8">описана</Pill>
+            <Pill color="#5fb83a">вписана</Pill>
+            <Pill color="#f59100">външно вписани</Pill>
+            <Pill color="#a435c4">ортоцентър</Pill>
+          </div>
+
+          <div className="mt-10 p-5 bg-[#1a1815]/5 border-l-4 border-[#1a1815] max-w-md rounded-r">
+            <div className="font-mono text-[10px] tracking-widest uppercase opacity-65 mb-2 font-bold">
+              как да работиш
+            </div>
+            <p className="font-display text-base leading-relaxed">
+              Във всеки чертеж <strong>хвани и влачи</strong> върховете A, B, C
+              с мишката или пръста. Всяка забележителна точка е <strong>бутон</strong> – кликни или посочи с мишката за допълнително инфо!
+            </p>
+          </div>
+
+          <button
+            onClick={() => scrollTo('centroid')}
+            className="btn-3d-large mt-10 w-max"
+            style={{ '--accent': '#e63946', '--accent-dark': '#b22a36' }}
+          >
+            <span>започни урока</span>
+            <span style={{ fontSize: '14px' }}>→</span>
+          </button>
+
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-widest uppercase opacity-55 flex items-center gap-3 font-bold">
+          <span className="w-12 h-px bg-current"></span>
+          скролни надолу
+          <span className="w-12 h-px bg-current"></span>
+        </div>
+      </section>
+
+      {/* ============== РАЗДЕЛИ ============== */}
+
+      <PointSection
+        id="centroid"
+        number="01"
+        title="Медицентър"
+        subtitle="Точка на пресичане на медианите"
+        accentColor="#e63946"
+        definition="Медианата на триъгълник е отсечка, свързваща връх с средата на срещуположната страна. Трите медиани се пресичат в една точка — медицентъра M."
+        property="Медицентърът дели всяка от медианите в отношение 2 : 1, считано от върха на триъгълника. Той е и център на тежестта на триъгълника."
+        formula="AM : MM₁ = 2 : 1"
+      >
+        <CentroidDemo />
+      </PointSection>
+
+      <PointSection
+        id="circumcenter"
+        number="02"
+        title="Център на описана окръжност"
+        subtitle="Пресечна точка на симетралите"
+        accentColor="#1d6fb8"
+        definition="Симетралата на отсечка е права, перпендикулярна на отсечката и минаваща през нейната среда. Трите симетрали на страните на триъгълника се пресичат в точка O."
+        property="Точката O е равноотдалечена от трите върха и е център на описаната около триъгълника окръжност с радиус R."
+        formula="OA = OB = OC = R"
+      >
+        <CircumcenterDemo />
+      </PointSection>
+
+      <PointSection
+        id="incenter"
+        number="03"
+        title="Център на вписана окръжност"
+        subtitle="Пресечна точка на ъглополовящите"
+        accentColor="#5fb83a"
+        definition="Ъглополовящата на ъгъл е лъч, който го разделя на два равни ъгъла. Трите вътрешни ъглополовящи се пресичат в точка I."
+        property="Точката I е равноотдалечена от трите страни и е център на вписаната в триъгълника окръжност с радиус r."
+        formula="d(I, a) = d(I, b) = d(I, c) = r"
+      >
+        <IncenterDemo />
+      </PointSection>
+
+      <PointSection
+        id="excircles"
+        number="04"
+        title="Външно вписани окръжности"
+        subtitle="Три окръжности извън триъгълника"
+        accentColor="#f59100"
+        definition="Външно вписана окръжност на триъгълник е окръжност, която се допира до едната страна отвън, а до продълженията на другите две. Има точно три такива окръжности с центрове Iₐ, I_b, I_c и радиуси rₐ, r_b, r_c."
+        property="Центърът Iₐ е пресечната точка на вътрешната ъглополовяща при върха A и външните ъглополовящи при върховете B и C. Заедно с вписаната, всеки триъгълник има четири допирателни окръжности."
+        formula="rₐ = S / (s − a)"
+      >
+        <ExcirclesDemo />
+      </PointSection>
+
+      <PointSection
+        id="orthocenter"
+        number="05"
+        title="Ортоцентър"
+        subtitle="Пресечна точка на височините"
+        accentColor="#a435c4"
+        definition="Височината от връх е перпендикуляр, спуснат от върха към срещуположната страна (или към нейното продължение). Трите височини (или техните продължения) се пресичат в точка H."
+        property="При остроъгълен триъгълник H е вътре, при правоъгълен — съвпада с върха при правия ъгъл, при тъпоъгълен — извън триъгълника."
+        formula="AH ⊥ BC,  BH ⊥ AC,  CH ⊥ AB"
+      >
+        <OrthocenterDemo />
+      </PointSection>
+
+      {/* ============== ПРАВА НА ОЙЛЕР ============== */}
+      <section id="euler" className="paper-texture grain min-h-screen py-24 relative border-t-2 border-[#1a1815]/15">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-12 gap-12 items-center">
+            <div className="md:col-span-5">
+              <div className="font-mono text-xs tracking-widest uppercase opacity-55 mb-6 font-bold">
+                06 · колинеарност
+              </div>
+              <h2 className="font-display font-light leading-[0.9]"
+                  style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+                Правата на<br/>
+                <span className="font-serif-it italic">Ойлер</span>
+              </h2>
+              <p className="font-display text-lg mt-8 leading-relaxed">
+                Едно от най-красивите открития в геометрията:{' '}
+                <strong>ортоцентърът H, медицентърът M и центърът O на описаната окръжност</strong>{' '}
+                на всеки неравностранен триъгълник лежат на една и съща права.
+              </p>
+              <p className="font-serif-it text-xl mt-6 opacity-85">
+                "В геометрията няма пътища за царе." — Евклид
+              </p>
+              <div className="mt-8 p-6 border-l-4 border-[#1a1815] bg-[#1a1815]/8 rounded-r">
+                <div className="font-mono text-xs tracking-wider uppercase opacity-65 mb-2 font-bold">
+                  отношение
+                </div>
+                <div className="font-display text-3xl">OM : MH = 1 : 2</div>
+              </div>
+              <p className="font-display text-base mt-6 opacity-80 leading-relaxed">
+                При равностранен триъгълник трите центъра <em>съвпадат</em> в една точка —
+                затова правата на Ойлер съществува само за неравностранен триъгълник.
+              </p>
+            </div>
+            <div className="md:col-span-7">
+              <EulerDemo />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============== СПЕЦИАЛНИ СЛУЧАИ ============== */}
+      <section id="special" className="paper-texture grain py-24 border-t-2 border-[#1a1815]/15">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="font-mono text-xs tracking-widest uppercase opacity-55 mb-6 font-bold">
+            07 · специални случаи
+          </div>
+          <h2 className="font-display font-light leading-[0.9] mb-6"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+            Когато триъгълникът<br/>
+            <span className="font-serif-it italic">е симетричен</span>
+          </h2>
+          <p className="font-display text-lg max-w-2xl mb-12 opacity-85">
+            Симетрията на равнобедрения и равностранния триъгълник кара
+            забележителните точки да се подреждат по особено красив начин.
+          </p>
+          <SpecialCasesDemo />
+        </div>
+      </section>
+
+      {/* ============== ТЕСТ ============== */}
+      <section id="quiz" className="bg-[#e8f1ec] text-[#1a1815] py-24 border-t-2 border-[#1a1815]/15">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="font-mono text-xs tracking-widest uppercase opacity-65 mb-6 font-bold">
+            08 · самопроверка
+          </div>
+          <h2 className="font-display font-light leading-[0.9] mb-12"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+            Провери <span className="font-serif-it italic">себе си</span>
+          </h2>
+          <Quiz />
+        </div>
+      </section>
+
+      {/* ============== FOOTER ============== */}
+      <footer className="bg-[#1a1815] text-[#f4f1ea] py-12 border-t-2 border-[#f4f1ea]/15">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between gap-6">
+          <div className="font-display text-2xl"><em>fin.</em></div>
+          <div className="font-mono text-xs tracking-wider uppercase opacity-65 font-bold">
+            интерактивен урок · геометрия · 8. клас
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+/* ============================================================
+   ПОМОЩНИ ЦВЕТОВИ ФУНКЦИИ
+   ============================================================ */
+
+function darken(hex) {
+  const map = {
+    '#e63946': '#a01622',
+    '#1d6fb8': '#11487a',
+    '#5fb83a': '#3d7c22',
+    '#f59100': '#b86700',
+    '#a435c4': '#6e1f86',
+    '#1a1815': '#000000',
+  };
+  return map[hex] || '#000000';
+}
+
+function Pill({ color, children }) {
+  return (
+    <div
+      className="border-2 rounded-full px-4 py-2 font-bold"
+      style={{
+        borderColor: color,
+        color: color,
+        boxShadow: `0 2px 0 0 ${darken(color)}, inset 0 1px 0 0 rgba(255,255,255,0.7)`,
+        background: 'linear-gradient(180deg, #ffffff 0%, #f4f1ea 100%)',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ============================================================
+   ШАБЛОН ЗА РАЗДЕЛ С ТОЧКА
+   ============================================================ */
+
+function PointSection({ id, number, title, subtitle, accentColor, definition, property, formula, children }) {
+  return (
+    <section id={id} className="paper-texture grain py-24 border-t-2 border-[#1a1815]/15 relative">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid md:grid-cols-12 gap-10">
+
+          <div className="md:col-span-5">
+            <div className="md:sticky md:top-32">
+              <div className="flex items-baseline gap-4 mb-6">
+                <span className="font-mono text-xs tracking-widest uppercase opacity-55 font-bold">{number}</span>
+                <span className="h-px flex-1 bg-[#1a1815]/30"></span>
+                <span className="w-5 h-5 rounded-full"
+                      style={{
+                        background: accentColor,
+                        boxShadow: `0 0 0 2px #fdfcf7, 0 0 0 4px ${accentColor}, 0 4px 8px ${accentColor}55`
+                      }}>
+                </span>
+              </div>
+
+              <h2 className="font-display font-light leading-[0.95]"
+                  style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}>
+                {title}
+              </h2>
+              <p className="font-serif-it text-xl mt-3 opacity-75">{subtitle}</p>
+
+              <div className="mt-10 space-y-6">
+                <div>
+                  <div className="font-mono text-[10px] tracking-widest uppercase opacity-55 mb-2 font-bold">
+                    определение
+                  </div>
+                  <p className="font-display text-base leading-relaxed">{definition}</p>
+                </div>
+                <div>
+                  <div className="font-mono text-[10px] tracking-widest uppercase opacity-55 mb-2 font-bold">
+                    свойство
+                  </div>
+                  <p className="font-display text-base leading-relaxed">{property}</p>
+                </div>
+                <div className="border-l-4 pl-4 py-3 bg-[#fdfcf7]/60 rounded-r"
+                     style={{ borderColor: accentColor }}>
+                  <div className="font-mono text-[10px] tracking-widest uppercase opacity-55 mb-1 font-bold">
+                    формула
+                  </div>
+                  <div className="font-display text-xl font-semibold" style={{ color: accentColor }}>
+                    {formula}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="md:col-span-7">
+            {children}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   HOOK ЗА ВЛАЧЕНЕ НА ВЪРХОВЕ НА ТРИЪГЪЛНИК
+   ============================================================ */
+
+function useInteractiveTriangle(initial) {
+  const [points, setPoints] = useState(initial);
+  const [dragging, setDragging] = useState(null);
+  const svgRef = useRef(null);
+
+  const getCoords = (e) => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    const pt = svg.createSVGPoint();
+    if (e.touches && e.touches.length > 0) {
+      pt.x = e.touches[0].clientX;
+      pt.y = e.touches[0].clientY;
+    } else {
+      pt.x = e.clientX;
+      pt.y = e.clientY;
+    }
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  };
+
+  const handleDown = (vertex) => (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(vertex);
+  };
+
+  useEffect(() => {
+    if (!dragging) return;
+
+    const handleMove = (e) => {
+      e.preventDefault();
+      const c = getCoords(e);
+      if (!c) return;
+      const x = Math.max(30, Math.min(570, c.x));
+      const y = Math.max(30, Math.min(370, c.y));
+      setPoints(p => ({ ...p, [dragging]: { x, y } }));
+    };
+
+    const handleUp = () => setDragging(null);
+
+    window.addEventListener('mousemove',  handleMove);
+    window.addEventListener('mouseup',    handleUp);
+    window.addEventListener('touchmove',  handleMove, { passive: false });
+    window.addEventListener('touchend',   handleUp);
+    window.addEventListener('touchcancel',handleUp);
+
+    return () => {
+      window.removeEventListener('mousemove',  handleMove);
+      window.removeEventListener('mouseup',    handleUp);
+      window.removeEventListener('touchmove',  handleMove);
+      window.removeEventListener('touchcancel',handleUp);
+    };
+  }, [dragging]);
+
+  return { points, setPoints, svgRef, handleDown, dragging };
+}
+
+/* ============================================================
+   ГЕОМЕТРИЧНИ ФУНКЦИИ
+   ============================================================ */
+
+const midpoint  = (p1, p2) => ({ x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 });
+const dist      = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
+const centroid  = (A, B, C) => ({ x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 });
+
+const circumcenter = (A, B, C) => {
+  const ax = A.x, ay = A.y, bx = B.x, by = B.y, cx = C.x, cy = C.y;
+  const d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
+  if (Math.abs(d) < 0.001) return { x: 0, y: 0 };
+  const ux = ((ax * ax + ay * ay) * (by - cy) + (bx * bx + by * by) * (cy - ay) + (cx * cx + cy * cy) * (ay - by)) / d;
+  const uy = ((ax * ax + ay * ay) * (cx - bx) + (bx * bx + by * by) * (ax - cx) + (cx * cx + cy * cy) * (bx - ax)) / d;
+  return { x: ux, y: uy };
+};
+
+const incenter = (A, B, C) => {
+  const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  const sum = a + b + c;
+  return {
+    x: (a * A.x + b * B.x + c * C.x) / sum,
+    y: (a * A.y + b * B.y + c * C.y) / sum
+  };
+};
+
+const triangleArea = (A, B, C) =>
+  Math.abs((B.x - A.x) * (C.y - A.y) - (C.x - A.x) * (B.y - A.y)) / 2;
+
+const inradius = (A, B, C) => {
+  const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  const s = (a + b + c) / 2;
+  return triangleArea(A, B, C) / s;
+};
+
+const excenter = (A, B, C, opposite) => {
+  const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  let wa, wb, wc;
+  if      (opposite === 'A') { wa = -a; wb =  b; wc =  c; }
+  else if (opposite === 'B') { wa =  a; wb = -b; wc =  c; }
+  else                       { wa =  a; wb =  b; wc = -c; }
+  const sum = wa + wb + wc;
+  if (Math.abs(sum) < 0.001) return { x: 0, y: 0 };
+  return {
+    x: (wa * A.x + wb * B.x + wc * C.x) / sum,
+    y: (wa * A.y + wb * B.y + wc * C.y) / sum
+  };
+};
+
+const exradius = (A, B, C, opposite) => {
+  const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  const s = (a + b + c) / 2;
+  const S = triangleArea(A, B, C);
+  if (opposite === 'A') return S / Math.max(0.01, s - a);
+  if (opposite === 'B') return S / Math.max(0.01, s - b);
+  return S / Math.max(0.01, s - c);
+};
+
+const orthocenter = (A, B, C) => {
+  const ax = A.x, ay = A.y, bx = B.x, by = B.y, cx = C.x, cy = C.y;
+  const d1x = -(cy - by), d1y = (cx - bx);
+  const d2x = -(cy - ay), d2y = (cx - ax);
+  const det = d1x * (-d2y) - d1y * (-d2x);
+  if (Math.abs(det) < 0.001) return { x: ax, y: ay };
+  const dx = bx - ax, dy = by - ay;
+  const t = (dx * (-d2y) - dy * (-d2x)) / det;
+  return { x: ax + t * d1x, y: ay + t * d1y };
+};
+
+const footPerp = (P, L1, L2) => {
+  const dx = L2.x - L1.x, dy = L2.y - L1.y;
+  const denom = dx * dx + dy * dy;
+  if (denom < 0.001) return { ...L1 };
+  const t = ((P.x - L1.x) * dx + (P.y - L1.y) * dy) / denom;
+  return { x: L1.x + t * dx, y: L1.y + t * dy };
+};
+
+/* ============================================================
+   ОБЩИ SVG КОМПОНЕНТИ
+   ============================================================ */
+
+// 1. ДИНАМИЧНА ПОЗИЦИЯ НА ВЪРХОВЕТЕ НАВЪН ОТ ТРИЪГЪЛНИКА
+function DraggableVertex({ p, label, onDown, centroid, color = '#1a1815' }) {
+  let ux = 0, uy = -1;
+  if (centroid) {
+    const dx = p.x - centroid.x;
+    const dy = p.y - centroid.y;
+    const len = Math.hypot(dx, dy);
+    if (len > 0.001) {
+      ux = dx / len;
+      uy = dy / len;
+    }
+  }
+
+  // Радиално избутване на текста навън спрямо центъра
+  const offset = 34;
+  const textX = p.x + ux * offset;
+  let textY = p.y + uy * offset;
+
+  let anchor = "middle";
+  if (ux > 0.3) anchor = "start";
+  else if (ux < -0.3) anchor = "end";
+
+  let baseline = "middle";
+  if (uy > 0.3) {
+    baseline = "hanging";
+    textY += 4;
+  } else if (uy < -0.3) {
+    baseline = "baseline";
+    textY -= 2;
+  }
+
+  return (
+    <g className="draggable-handle">
+      <circle cx={p.x} cy={p.y} r="34" fill="transparent"
+              onMouseDown={onDown} onTouchStart={onDown}/>
+      <circle cx={p.x} cy={p.y} r="18" fill="none"
+              stroke={color} strokeWidth="1.8" opacity="0.35"/>
+      <circle cx={p.x} cy={p.y} r="10" fill={color} stroke="#fdfcf7" strokeWidth="3"/>
+      <circle cx={p.x} cy={p.y} r="3.5" fill="#fdfcf7"/>
+      <text x={textX} y={textY} textAnchor={anchor} dominantBaseline={baseline}
+            fontFamily="Fraunces" fontStyle="italic" fontSize="24" fontWeight="700"
+            fill={color} stroke="#fdfcf7" strokeWidth="4" paintOrder="stroke">
+        {label}
+      </text>
+    </g>
+  );
+}
+
+// 2. НОВ ИНТЕРАКТИВЕН БУТОН ЗА ЦЕНТРОВЕТЕ
+function InteractiveCenter({ p, label, color, infoTitle, infoText, leftSide }) {
+  const [open, setOpen] = useState(false);
+
+  // Избягване на излизане от границите на SVG viewBox-а (ок. 600x410)
+  const isRight = p.x > 300;
+  const isBottom = p.y > 200;
+
+  let foX = isRight ? p.x - 280 : p.x + 20;
+  let foY = isBottom ? p.y - 180 : p.y + 20;
+
+  const labelX = leftSide ? p.x - 26 : p.x + 16;
+  let anchor = leftSide ? "end" : "start";
+
+  return (
+    <g className="cursor-pointer"
+       onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+       onMouseEnter={() => setOpen(true)}
+       onMouseLeave={() => setOpen(false)}
+       onTouchStart={(e) => { e.stopPropagation(); setOpen(!open); }}
+    >
+      {/* Прозрачен по-голям кръг за по-лесно кликване/hover */}
+      <circle cx={p.x} cy={p.y} r="34" fill="transparent" />
+
+      <circle cx={p.x} cy={p.y} r={open ? "24" : "20"} fill={color} opacity={open ? "0.35" : "0.2"}
+              style={{ transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}/>
+      <circle cx={p.x} cy={p.y} r={open ? "13" : "11"} fill={color} stroke="#fdfcf7" strokeWidth="3"
+              style={{ transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}/>
+      <circle cx={p.x} cy={p.y} r="3.5" fill="#fdfcf7"/>
+
+      <text x={labelX} y={p.y + 6} fontFamily="Fraunces" fontWeight="700" fontSize="20"
+            fill={color} stroke="#fdfcf7" strokeWidth="4" paintOrder="stroke"
+            textAnchor={anchor}>{label}</text>
+
+      {open && (
+        <foreignObject x={foX} y={foY} width="280" height="220"
+                       className="overflow-visible pointer-events-none" style={{ zIndex: 100 }}>
+          <div className="bg-[#fdfcf7] text-[#1a1815] p-5 rounded-xl shadow-[0_15px_35px_-5px_rgba(0,0,0,0.15)] border border-[#1a1815]/10 border-l-4 pointer-events-none animate-tooltip-pop"
+               style={{ borderLeftColor: color }}>
+            <div className="font-mono text-[11px] uppercase tracking-widest mb-3 font-bold" style={{ color: color }}>
+              {infoTitle}
+            </div>
+            <div className="font-display text-[16px] leading-relaxed opacity-95">
+              {infoText}
+            </div>
+          </div>
+        </foreignObject>
+      )}
+    </g>
+  );
+}
+
+function DragHint() {
+  return (
+    <g opacity="0.7" pointerEvents="none">
+      <text x="50%" y="395" textAnchor="middle"
+            fontFamily="JetBrains Mono" fontSize="10" fontWeight="700"
+            letterSpacing="2" fill="#1a1815">
+        ↔ ВЛАЧИ ВЪРХОВЕТЕ · КЛИКНИ НА ЦЕНТЪР
+      </text>
+    </g>
+  );
+}
+
+function GridPattern({ id, accent }) {
+  return (
+    <defs>
+      <pattern id={id} width="25" height="25" patternUnits="userSpaceOnUse">
+        <path d="M 25 0 L 0 0 0 25" fill="none"
+              stroke={accent || "#1a1815"} strokeWidth="0.5" opacity="0.22"/>
+      </pattern>
+    </defs>
+  );
+}
+
+function InfoBox({ x, y, w, h = 80, accent = '#1a1815', children }) {
+  return (
+    <g pointerEvents="none">
+      <rect x={x + 3} y={y + 4} width={w} height={h} rx="4" fill="#1a1815" opacity="0.18"/>
+      <rect x={x} y={y} width={w} height={h} rx="4"
+            fill="#fdfcf7" stroke={accent} strokeWidth="2"/>
+      {children}
+    </g>
+  );
+}
+
+function DemoFrame({ title, badge, badgeColor, hint, children }) {
+  return (
+    <div className="bg-[#fdfcf7] border-2 border-[#1a1815]/25 rounded-md overflow-hidden
+                    shadow-[0_30px_60px_-15px_rgba(0,0,0,0.22),0_8px_0_0_rgba(26,24,21,0.1)]"
+         style={{ borderTopColor: badgeColor, borderTopWidth: '4px' }}>
+      <div className="px-5 py-3 border-b-2 border-[#1a1815]/10 flex justify-between items-center
+                      bg-gradient-to-b from-[#fdfcf7] to-[#f4f1ea]/60">
+        <div className="font-mono text-[10px] tracking-widest uppercase opacity-75 font-bold">
+          {title}
+        </div>
+        <div className="font-mono text-[10px] tracking-wider uppercase font-bold"
+             style={{ color: badgeColor }}>
+          {badge}
+        </div>
+      </div>
+      {children}
+      <div className="px-5 py-3 border-t-2 border-[#1a1815]/10 font-mono text-[10px]
+                      tracking-wider uppercase opacity-70 font-bold
+                      bg-gradient-to-b from-[#f4f1ea]/40 to-[#fdfcf7]">
+        {hint}
+      </div>
+    </div>
+  );
+}
+
+function ExtendedLine({ P1, P2, stroke, opacity, dashed = true, strokeWidth = 1.5 }) {
+  const dx = P2.x - P1.x, dy = P2.y - P1.y;
+  const len = Math.hypot(dx, dy);
+  if (len < 0.1) return null;
+  const ux = dx / len, uy = dy / len;
+  const L = 1500;
+  return (
+    <line
+      x1={P1.x - ux * L} y1={P1.y - uy * L}
+      x2={P2.x + ux * L} y2={P2.y + uy * L}
+      stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
+      strokeDasharray={dashed ? "4,5" : null} strokeLinecap="round"
+      pointerEvents="none"
+    />
+  );
+}
+
+/* ============================================================
+   01 — МЕДИЦЕНТЪР
+   ============================================================ */
+
+function CentroidDemo() {
+  const { points, svgRef, handleDown } = useInteractiveTriangle({
+    A: { x: 300, y: 70 },
+    B: { x: 90,  y: 330 },
+    C: { x: 510, y: 310 },
+  });
+  const { A, B, C } = points;
+  const Ma = midpoint(B, C), Mb = midpoint(A, C), Mc = midpoint(A, B);
+  const M = centroid(A, B, C);
+
+  return (
+    <DemoFrame
+      title="фиг. 01 · медиани и медицентър"
+      badge="● медицентър M"
+      badgeColor="#e63946"
+      hint="↳ медианата е разделена в отношение 2:1 от върха"
+    >
+      <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+        <GridPattern id="grid-c" accent="#e63946"/>
+        <defs>
+          <linearGradient id="tri-fill-c" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#e63946" stopOpacity="0.20"/>
+            <stop offset="100%" stopColor="#e63946" stopOpacity="0.06"/>
+          </linearGradient>
+        </defs>
+        <rect width="600" height="410" fill="url(#grid-c)"/>
+
+        <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                 fill="url(#tri-fill-c)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round"/>
+
+        <line x1={A.x} y1={A.y} x2={Ma.x} y2={Ma.y} stroke="#e63946" strokeWidth="3" strokeDasharray="7,4" strokeLinecap="round"/>
+        <line x1={B.x} y1={B.y} x2={Mb.x} y2={Mb.y} stroke="#e63946" strokeWidth="3" strokeDasharray="7,4" strokeLinecap="round"/>
+        <line x1={C.x} y1={C.y} x2={Mc.x} y2={Mc.y} stroke="#e63946" strokeWidth="3" strokeDasharray="7,4" strokeLinecap="round"/>
+
+        {[Ma, Mb, Mc].map((p, i) => (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="6" fill="#fdfcf7" stroke="#e63946" strokeWidth="2.5"/>
+            <circle cx={p.x} cy={p.y} r="2.5" fill="#e63946"/>
+          </g>
+        ))}
+
+        <text x={Ma.x + 11} y={Ma.y + 19} fontFamily="Fraunces" fontStyle="italic" fontWeight="700"
+              fontSize="15" fill="#e63946" stroke="#fdfcf7" strokeWidth="3" paintOrder="stroke">M₁</text>
+        <text x={Mb.x + 11} y={Mb.y + 5}  fontFamily="Fraunces" fontStyle="italic" fontWeight="700"
+              fontSize="15" fill="#e63946" stroke="#fdfcf7" strokeWidth="3" paintOrder="stroke">M₂</text>
+        <text x={Mc.x - 30} y={Mc.y + 5}  fontFamily="Fraunces" fontStyle="italic" fontWeight="700"
+              fontSize="15" fill="#e63946" stroke="#fdfcf7" strokeWidth="3" paintOrder="stroke">M₃</text>
+
+        {['A', 'B', 'C'].map(label =>
+          <DraggableVertex key={label} p={points[label]} label={label} centroid={M} onDown={handleDown(label)}/>
+        )}
+
+        {/* Интерактивен Център (Сложен след върховете за да е отгоре) */}
+        <InteractiveCenter
+          p={M} label="M" color="#e63946"
+          infoTitle="Медицентър"
+          infoText="Медицентърът дели всяка медиана в отношение 2:1, считано от върха. Той е центърът на тежестта на триъгълника."
+        />
+
+        <InfoBox x={15} y={15} w={165} accent="#e63946">
+          <text x="25" y="33" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700"
+                fill="#1a1815" opacity="0.7" letterSpacing="1.5">ОТНОШЕНИЕ AM : MM₁</text>
+          <text x="25" y="58" fontFamily="Fraunces" fontSize="22" fill="#e63946" fontWeight="700">2 : 1</text>
+          <text x="25" y="75" fontFamily="JetBrains Mono" fontSize="9" fontWeight="600"
+                fill="#1a1815" opacity="0.75">{`${dist(A, M).toFixed(0)} : ${dist(M, Ma).toFixed(0)}`}</text>
+        </InfoBox>
+
+        <DragHint/>
+      </svg>
+    </DemoFrame>
+  );
+}
+
+/* ============================================================
+   02 — ОПИСАНА ОКРЪЖНОСТ
+   ============================================================ */
+
+function CircumcenterDemo() {
+  const { points, svgRef, handleDown } = useInteractiveTriangle({
+    A: { x: 300, y: 90 },
+    B: { x: 110, y: 320 },
+    C: { x: 490, y: 330 },
+  });
+  const { A, B, C } = points;
+  const ctr = centroid(A, B, C);
+  const Ma = midpoint(B, C), Mb = midpoint(A, C), Mc = midpoint(A, B);
+  const O = circumcenter(A, B, C);
+  const R = dist(O, A);
+
+  const perpBisector = (P1, P2, mid) => {
+    const dx = P2.x - P1.x, dy = P2.y - P1.y;
+    const len = Math.hypot(dx, dy);
+    if (len < 0.1) return { x1: mid.x, y1: mid.y, x2: mid.x, y2: mid.y };
+    const nx = -dy / len, ny = dx / len;
+    const L = 800;
+    return {
+      x1: mid.x - nx * L, y1: mid.y - ny * L,
+      x2: mid.x + nx * L, y2: mid.y + ny * L
+    };
+  };
+
+  const pa = perpBisector(B, C, Ma);
+  const pb = perpBisector(A, C, Mb);
+  const pc = perpBisector(A, B, Mc);
+
+  return (
+    <DemoFrame
+      title="фиг. 02 · симетрали и описана окръжност"
+      badge="● център O"
+      badgeColor="#1d6fb8"
+      hint="↳ при тъпоъгълен триъгълник O е извън триъгълника"
+    >
+      <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+        <GridPattern id="grid-cc" accent="#1d6fb8"/>
+        <defs>
+          <radialGradient id="circle-fill-cc" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="#1d6fb8" stopOpacity="0.04"/>
+            <stop offset="100%" stopColor="#1d6fb8" stopOpacity="0.18"/>
+          </radialGradient>
+          <linearGradient id="tri-fill-cc" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#1d6fb8" stopOpacity="0.16"/>
+            <stop offset="100%" stopColor="#1d6fb8" stopOpacity="0.06"/>
+          </linearGradient>
+          <clipPath id="clip-cc"><rect x="0" y="0" width="600" height="410"/></clipPath>
+        </defs>
+        <rect width="600" height="410" fill="url(#grid-cc)"/>
+
+        <g clipPath="url(#clip-cc)">
+          <circle cx={O.x} cy={O.y} r={R} fill="url(#circle-fill-cc)" stroke="#1d6fb8" strokeWidth="3" pointerEvents="none"/>
+          <line x1={pa.x1} y1={pa.y1} x2={pa.x2} y2={pa.y2} stroke="#1d6fb8" strokeWidth="2" strokeDasharray="6,4" opacity="0.85" pointerEvents="none"/>
+          <line x1={pb.x1} y1={pb.y1} x2={pb.x2} y2={pb.y2} stroke="#1d6fb8" strokeWidth="2" strokeDasharray="6,4" opacity="0.85" pointerEvents="none"/>
+          <line x1={pc.x1} y1={pc.y1} x2={pc.x2} y2={pc.y2} stroke="#1d6fb8" strokeWidth="2" strokeDasharray="6,4" opacity="0.85" pointerEvents="none"/>
+        </g>
+
+        <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                 fill="url(#tri-fill-cc)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+
+        <line x1={O.x} y1={O.y} x2={A.x} y2={A.y} stroke="#1d6fb8" strokeWidth="2" opacity="0.85" pointerEvents="none"/>
+        <line x1={O.x} y1={O.y} x2={B.x} y2={B.y} stroke="#1d6fb8" strokeWidth="2" opacity="0.85" pointerEvents="none"/>
+        <line x1={O.x} y1={O.y} x2={C.x} y2={C.y} stroke="#1d6fb8" strokeWidth="2" opacity="0.85" pointerEvents="none"/>
+
+        {[Ma, Mb, Mc].map((p, i) => (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="6" fill="#fdfcf7" stroke="#1d6fb8" strokeWidth="2.5" pointerEvents="none"/>
+            <circle cx={p.x} cy={p.y} r="2.5" fill="#1d6fb8" pointerEvents="none"/>
+          </g>
+        ))}
+
+        {['A', 'B', 'C'].map(label =>
+          <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
+        )}
+
+        <InteractiveCenter
+          p={O} label="O" color="#1d6fb8"
+          infoTitle="Описана Окръжност"
+          infoText="Пресечна точка на трите симетрали. Точката O се намира на равни разстояния (радиус R) от върховете A, B и C на триъгълника."
+        />
+
+        <InfoBox x={15} y={15} w={155} accent="#1d6fb8">
+          <text x="25" y="33" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700"
+                fill="#1a1815" opacity="0.7" letterSpacing="1.5">РАДИУС R</text>
+          <text x="25" y="58" fontFamily="Fraunces" fontSize="22" fill="#1d6fb8" fontWeight="700">{R.toFixed(1)}</text>
+          <text x="25" y="75" fontFamily="JetBrains Mono" fontSize="9" fontWeight="600"
+                fill="#1a1815" opacity="0.75">OA = OB = OC</text>
+        </InfoBox>
+
+        <DragHint/>
+      </svg>
+    </DemoFrame>
+  );
+}
+
+/* ============================================================
+   03 — ВПИСАНА ОКРЪЖНОСТ
+   ============================================================ */
+
+function IncenterDemo() {
+  const { points, svgRef, handleDown } = useInteractiveTriangle({
+    A: { x: 300, y: 80 },
+    B: { x: 100, y: 330 },
+    C: { x: 500, y: 320 },
+  });
+  const { A, B, C } = points;
+  const ctr = centroid(A, B, C);
+  const I = incenter(A, B, C);
+  const r = inradius(A, B, C);
+  const fa = footPerp(I, B, C), fb = footPerp(I, A, C), fc = footPerp(I, A, B);
+
+  const bisectorEnd = (V, P1, P2) => {
+    const d1 = dist(V, P1), d2 = dist(V, P2);
+    if (d1 < 0.1 || d2 < 0.1) return V;
+    const u1x = (P1.x - V.x) / d1, u1y = (P1.y - V.y) / d1;
+    const u2x = (P2.x - V.x) / d2, u2y = (P2.y - V.y) / d2;
+    const bx = u1x + u2x, by = u1y + u2y;
+    const blen = Math.hypot(bx, by);
+    if (blen < 0.001) return V;
+    const dx = P2.x - P1.x, dy = P2.y - P1.y;
+    const det = (bx / blen) * (-dy) - (by / blen) * (-dx);
+    if (Math.abs(det) < 0.001) return V;
+    const rhsx = P1.x - V.x, rhsy = P1.y - V.y;
+    const t = (rhsx * (-dy) - rhsy * (-dx)) / det;
+    return { x: V.x + (bx / blen) * t, y: V.y + (by / blen) * t };
+  };
+
+  const ea = bisectorEnd(A, B, C), eb = bisectorEnd(B, A, C), ec = bisectorEnd(C, A, B);
+
+  return (
+    <DemoFrame
+      title="фиг. 03 · ъглополовящи и вписана окръжност"
+      badge="● център I"
+      badgeColor="#5fb83a"
+      hint="↳ I винаги е вътре в триъгълника, при всеки негов вид"
+    >
+      <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+        <GridPattern id="grid-i" accent="#5fb83a"/>
+        <defs>
+          <radialGradient id="circle-fill-i" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="#5fb83a" stopOpacity="0.40"/>
+            <stop offset="100%" stopColor="#5fb83a" stopOpacity="0.14"/>
+          </radialGradient>
+          <linearGradient id="tri-fill-i" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#5fb83a" stopOpacity="0.16"/>
+            <stop offset="100%" stopColor="#5fb83a" stopOpacity="0.06"/>
+          </linearGradient>
+        </defs>
+        <rect width="600" height="410" fill="url(#grid-i)"/>
+
+        <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                 fill="url(#tri-fill-i)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round"/>
+
+        <circle cx={I.x} cy={I.y} r={r} fill="url(#circle-fill-i)" stroke="#5fb83a" strokeWidth="3" pointerEvents="none"/>
+
+        <line x1={A.x} y1={A.y} x2={ea.x} y2={ea.y} stroke="#5fb83a" strokeWidth="2.5" strokeDasharray="7,4" opacity="1" strokeLinecap="round" pointerEvents="none"/>
+        <line x1={B.x} y1={B.y} x2={eb.x} y2={eb.y} stroke="#5fb83a" strokeWidth="2.5" strokeDasharray="7,4" opacity="1" strokeLinecap="round" pointerEvents="none"/>
+        <line x1={C.x} y1={C.y} x2={ec.x} y2={ec.y} stroke="#5fb83a" strokeWidth="2.5" strokeDasharray="7,4" opacity="1" strokeLinecap="round" pointerEvents="none"/>
+
+        <line x1={I.x} y1={I.y} x2={fa.x} y2={fa.y} stroke="#5fb83a" strokeWidth="2" opacity="0.95" pointerEvents="none"/>
+        <line x1={I.x} y1={I.y} x2={fb.x} y2={fb.y} stroke="#5fb83a" strokeWidth="2" opacity="0.95" pointerEvents="none"/>
+        <line x1={I.x} y1={I.y} x2={fc.x} y2={fc.y} stroke="#5fb83a" strokeWidth="2" opacity="0.95" pointerEvents="none"/>
+
+        {[fa, fb, fc].map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r="5" fill="#5fb83a" stroke="#fdfcf7" strokeWidth="2" pointerEvents="none"/>
+        ))}
+
+        {['A', 'B', 'C'].map(label =>
+          <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
+        )}
+
+        <InteractiveCenter
+          p={I} label="I" color="#5fb83a"
+          infoTitle="Вписана Окръжност"
+          infoText="Пресечна точка на вътрешните ъглополовящи. Винаги се намира вътре в триъгълника и е равноотдалечена от трите му страни."
+        />
+
+        <InfoBox x={15} y={15} w={155} accent="#5fb83a">
+          <text x="25" y="33" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700"
+                fill="#1a1815" opacity="0.7" letterSpacing="1.5">РАДИУС r</text>
+          <text x="25" y="58" fontFamily="Fraunces" fontSize="22" fill="#5fb83a" fontWeight="700">{r.toFixed(1)}</text>
+          <text x="25" y="75" fontFamily="JetBrains Mono" fontSize="9" fontWeight="600"
+                fill="#1a1815" opacity="0.75">d(I, страна) = r</text>
+        </InfoBox>
+
+        <DragHint/>
+      </svg>
+    </DemoFrame>
+  );
+}
+
+/* ============================================================
+   04 — ВЪНШНО ВПИСАНИ ОКРЪЖНОСТИ
+   ============================================================ */
+
+function ExcirclesDemo() {
+  const { points, svgRef, handleDown } = useInteractiveTriangle({
+    A: { x: 300, y: 130 },
+    B: { x: 200, y: 280 },
+    C: { x: 400, y: 270 },
+  });
+
+  const [showWhich, setShowWhich] = useState({ A: true, B: true, C: true, I: true });
+
+  const { A, B, C } = points;
+  const ctr = centroid(A, B, C);
+  const Ia = excenter(A, B, C, 'A');
+  const Ib = excenter(A, B, C, 'B');
+  const Ic = excenter(A, B, C, 'C');
+  const ra = exradius(A, B, C, 'A');
+  const rb = exradius(A, B, C, 'B');
+  const rc = exradius(A, B, C, 'C');
+  const I  = incenter(A, B, C);
+  const r  = inradius(A, B, C);
+
+  const buttons = [
+    { k: 'I', label: 'вписана', color: '#5fb83a', dark: '#3d7c22' },
+    { k: 'A', label: 'I_a',     color: '#f59100', dark: '#b86700' },
+    { k: 'B', label: 'I_b',     color: '#ff6b00', dark: '#c24f00' },
+    { k: 'C', label: 'I_c',     color: '#d04500', dark: '#923000' },
+  ];
+
+  return (
+    <div>
+      <div className="bg-[#fdfcf7] border-2 border-[#1a1815]/25 rounded-md overflow-hidden
+                      shadow-[0_30px_60px_-15px_rgba(0,0,0,0.22),0_8px_0_0_rgba(26,24,21,0.1)]"
+           style={{ borderTopColor: '#f59100', borderTopWidth: '4px' }}>
+
+        <div className="px-5 py-3 border-b-2 border-[#1a1815]/10 flex justify-between items-center
+                        flex-wrap gap-2 bg-gradient-to-b from-[#fdfcf7] to-[#f4f1ea]/60">
+          <div className="font-mono text-[10px] tracking-widest uppercase opacity-75 font-bold">
+            фиг. 04 · четирите допирателни окръжности
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {buttons.map(b => (
+              <button
+                key={b.k}
+                onClick={() => setShowWhich(s => ({ ...s, [b.k]: !s[b.k] }))}
+                className={`btn-3d-mini ${showWhich[b.k] ? 'active' : ''}`}
+                style={{ '--mini-color': b.color, '--mini-color-dark': b.dark }}
+              >
+                {showWhich[b.k] ? '●' : '○'} {b.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <svg ref={svgRef} viewBox="-200 -200 1000 800"
+             className="w-full bg-[#fdfcf7]"
+             style={{ touchAction: 'none' }}
+             preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <pattern id="grid-ex" width="25" height="25" patternUnits="userSpaceOnUse">
+              <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f59100" strokeWidth="0.5" opacity="0.18"/>
+            </pattern>
+            <clipPath id="clip-ex"><rect x="-200" y="-200" width="1000" height="800"/></clipPath>
+
+            <radialGradient id="ex-fill-a" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#f59100" stopOpacity="0.22"/>
+              <stop offset="100%" stopColor="#f59100" stopOpacity="0.06"/>
+            </radialGradient>
+            <radialGradient id="ex-fill-b" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#ff6b00" stopOpacity="0.22"/>
+              <stop offset="100%" stopColor="#ff6b00" stopOpacity="0.06"/>
+            </radialGradient>
+            <radialGradient id="ex-fill-c" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#d04500" stopOpacity="0.22"/>
+              <stop offset="100%" stopColor="#d04500" stopOpacity="0.06"/>
+            </radialGradient>
+            <radialGradient id="ex-fill-i" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#5fb83a" stopOpacity="0.40"/>
+              <stop offset="100%" stopColor="#5fb83a" stopOpacity="0.14"/>
+            </radialGradient>
+          </defs>
+
+          <rect x="-200" y="-200" width="1000" height="800" fill="url(#grid-ex)"/>
+
+          <g clipPath="url(#clip-ex)">
+            <ExtendedLine P1={B} P2={C} stroke="#1a1815" opacity="0.45" strokeWidth="1.5"/>
+            <ExtendedLine P1={A} P2={C} stroke="#1a1815" opacity="0.45" strokeWidth="1.5"/>
+            <ExtendedLine P1={A} P2={B} stroke="#1a1815" opacity="0.45" strokeWidth="1.5"/>
+
+            {showWhich.A && <circle cx={Ia.x} cy={Ia.y} r={ra} fill="url(#ex-fill-a)" stroke="#f59100" strokeWidth="2.8" pointerEvents="none"/>}
+            {showWhich.B && <circle cx={Ib.x} cy={Ib.y} r={rb} fill="url(#ex-fill-b)" stroke="#ff6b00" strokeWidth="2.8" pointerEvents="none"/>}
+            {showWhich.C && <circle cx={Ic.x} cy={Ic.y} r={rc} fill="url(#ex-fill-c)" stroke="#d04500" strokeWidth="2.8" pointerEvents="none"/>}
+            {showWhich.I && <circle cx={I.x}  cy={I.y}  r={r}  fill="url(#ex-fill-i)" stroke="#5fb83a" strokeWidth="3" pointerEvents="none"/>}
+          </g>
+
+          <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                   fill="#fdfcf7" fillOpacity="0.75" stroke="#1a1815" strokeWidth="4" strokeLinejoin="round" pointerEvents="none"/>
+
+          {['A', 'B', 'C'].map(label =>
+            <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
+          )}
+
+          {showWhich.A && (
+            <InteractiveCenter p={Ia} label="I_a" color="#f59100"
+              infoTitle="Външно вписана (ср. A)"
+              infoText="Окръжност, допираща се външно до страната 'a' и до продълженията на 'b' и 'c'. Пресечна точка на две външни и една вътрешна ъглополовяща."
+            />
+          )}
+          {showWhich.B && (
+            <InteractiveCenter p={Ib} label="I_b" color="#ff6b00"
+              infoTitle="Външно вписана (ср. B)"
+              infoText="Окръжност, допираща се външно до страната 'b' и до продълженията на 'a' и 'c'."
+            />
+          )}
+          {showWhich.C && (
+            <InteractiveCenter p={Ic} label="I_c" color="#d04500"
+              infoTitle="Външно вписана (ср. C)"
+              infoText="Окръжност, допираща се външно до страната 'c' и до продълженията на 'a' и 'b'."
+            />
+          )}
+          {showWhich.I && (
+            <InteractiveCenter p={I} label="I" color="#5fb83a"
+              infoTitle="Вписана Окръжност"
+              infoText="Пресечна точка на трите вътрешни ъглополовящи. Допира се вътрешно до трите страни."
+            />
+          )}
+        </svg>
+
+        <div className="px-5 py-3 border-t-2 border-[#1a1815]/10 font-mono text-[10px]
+                        tracking-wider uppercase opacity-70 font-bold
+                        bg-gradient-to-b from-[#f4f1ea]/40 to-[#fdfcf7]">
+          ↳ всяка външно вписана се допира до една страна и до продълженията на другите две
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 mt-4">
+        {[
+          { label: 'rₐ',  val: ra, color: '#f59100', desc: 'срещу A' },
+          { label: 'r_b', val: rb, color: '#ff6b00', desc: 'срещу B' },
+          { label: 'r_c', val: rc, color: '#d04500', desc: 'срещу C' },
+        ].map(item => (
+          <div key={item.label}
+               className="bg-[#fdfcf7] border-2 border-[#1a1815]/15 px-4 py-3 rounded-md
+                          shadow-[0_3px_0_0_rgba(26,24,21,0.12)]"
+               style={{ borderLeftColor: item.color, borderLeftWidth: '5px' }}>
+            <div className="font-mono text-[9px] tracking-widest uppercase opacity-70 font-bold">
+              радиус {item.desc}
+            </div>
+            <div className="font-display text-2xl mt-1 font-semibold" style={{ color: item.color }}>
+              {item.label} = {item.val.toFixed(1)}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 p-5 bg-[#fdfcf7] border-2 border-[#1a1815]/15 rounded-md
+                      shadow-[0_3px_0_0_rgba(26,24,21,0.12)]"
+           style={{ borderLeftColor: '#f59100', borderLeftWidth: '5px' }}>
+        <div className="font-mono text-[10px] tracking-widest uppercase opacity-70 mb-3 font-bold">
+          забележителна формула
+        </div>
+        <div className="font-display text-lg leading-relaxed">
+          За лицето S и полупериметъра s = (a + b + c) / 2 на триъгълника е в сила:
+          <span className="font-serif-it font-semibold" style={{ color: '#f59100' }}>
+            {' '}S = r·s = rₐ·(s − a) = r_b·(s − b) = r_c·(s − c)
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   05 — ОРТОЦЕНТЪР
+   ============================================================ */
+
+function OrthocenterDemo() {
+  const { points, svgRef, handleDown } = useInteractiveTriangle({
+    A: { x: 300, y: 80 },
+    B: { x: 130, y: 320 },
+    C: { x: 490, y: 300 },
+  });
+  const { A, B, C } = points;
+  const ctr = centroid(A, B, C);
+  const H = orthocenter(A, B, C);
+  const fa = footPerp(A, B, C), fb = footPerp(B, A, C), fc = footPerp(C, A, B);
+
+  const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  const angles = [
+    Math.acos(Math.max(-1, Math.min(1, (b * b + c * c - a * a) / (2 * b * c)))),
+    Math.acos(Math.max(-1, Math.min(1, (a * a + c * c - b * b) / (2 * a * c)))),
+    Math.acos(Math.max(-1, Math.min(1, (a * a + b * b - c * c) / (2 * a * b)))),
+  ];
+  const maxAngle = Math.max(...angles) * 180 / Math.PI;
+  let triType = 'остроъгълен';
+  if (maxAngle > 90.5) triType = 'тъпоъгълен';
+  else if (maxAngle > 89.5 && maxAngle < 90.5) triType = 'правоъгълен';
+
+  return (
+    <DemoFrame
+      title="фиг. 05 · височини на триъгълника"
+      badge="● ортоцентър H"
+      badgeColor="#a435c4"
+      hint="↳ опитай тъпоъгълен триъгълник — H ще излезе извън него"
+    >
+      <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+        <GridPattern id="grid-o" accent="#a435c4"/>
+        <defs>
+          <linearGradient id="tri-fill-o" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#a435c4" stopOpacity="0.16"/>
+            <stop offset="100%" stopColor="#a435c4" stopOpacity="0.05"/>
+          </linearGradient>
+          <clipPath id="clip-o"><rect x="0" y="0" width="600" height="410"/></clipPath>
+        </defs>
+        <rect width="600" height="410" fill="url(#grid-o)"/>
+
+        <g clipPath="url(#clip-o)">
+          <ExtendedLine P1={A} P2={fa} stroke="#a435c4" opacity="1" strokeWidth="2.5"/>
+          <ExtendedLine P1={B} P2={fb} stroke="#a435c4" opacity="1" strokeWidth="2.5"/>
+          <ExtendedLine P1={C} P2={fc} stroke="#a435c4" opacity="1" strokeWidth="2.5"/>
+        </g>
+
+        <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                 fill="url(#tri-fill-o)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+
+        {[
+          { foot: fa, side: B, vertex: A },
+          { foot: fb, side: A, vertex: B },
+          { foot: fc, side: A, vertex: C }
+        ].map((item, i) => {
+          const { foot, side, vertex } = item;
+          const dx1 = side.x - foot.x, dy1 = side.y - foot.y;
+          const len1 = Math.hypot(dx1, dy1);
+          const dx2 = vertex.x - foot.x, dy2 = vertex.y - foot.y;
+          const len2 = Math.hypot(dx2, dy2);
+          if (len1 < 0.1 || len2 < 0.1) return null;
+          const s = 11;
+          const p1 = { x: foot.x + dx1/len1 * s,                     y: foot.y + dy1/len1 * s };
+          const p2 = { x: foot.x + dx1/len1 * s + dx2/len2 * s,      y: foot.y + dy1/len1 * s + dy2/len2 * s };
+          const p3 = { x: foot.x + dx2/len2 * s,                     y: foot.y + dy2/len2 * s };
+          return (
+            <polyline key={i} points={`${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`}
+                      fill="none" stroke="#a435c4" strokeWidth="2" opacity="1" pointerEvents="none"/>
+          );
+        })}
+
+        {[fa, fb, fc].map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r="5" fill="#a435c4" stroke="#fdfcf7" strokeWidth="2" pointerEvents="none"/>
+        ))}
+
+        {['A', 'B', 'C'].map(label =>
+          <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
+        )}
+
+        <InteractiveCenter
+          p={H} label="H" color="#a435c4" leftSide={H.x < ctr.x}
+          infoTitle="Ортоцентър"
+          infoText="Пресечна точка на височините. При тъпоъгълен триъгълник винаги се намира ИЗВЪН него!"
+        />
+
+        <InfoBox x={15} y={15} w={185} accent="#a435c4">
+          <text x="25" y="33" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700"
+                fill="#1a1815" opacity="0.7" letterSpacing="1.5">ВИД ТРИЪГЪЛНИК</text>
+          <text x="25" y="58" fontFamily="Fraunces" fontSize="18" fill="#a435c4"
+                fontWeight="700" fontStyle="italic">{triType}</text>
+          <text x="25" y="75" fontFamily="JetBrains Mono" fontSize="9" fontWeight="600"
+                fill="#1a1815" opacity="0.75">макс. ъгъл ≈ {maxAngle.toFixed(0)}°</text>
+        </InfoBox>
+
+        <DragHint/>
+      </svg>
+    </DemoFrame>
+  );
+}
+
+/* ============================================================
+   06 — ПРАВА НА ОЙЛЕР
+   ============================================================ */
+
+function EulerDemo() {
+  const { points, svgRef, handleDown } = useInteractiveTriangle({
+    A: { x: 300, y: 80 },
+    B: { x: 110, y: 320 },
+    C: { x: 490, y: 330 },
+  });
+  const { A, B, C } = points;
+  const M = centroid(A, B, C), O = circumcenter(A, B, C), H = orthocenter(A, B, C);
+
+  const extendLine = (P1, P2, length = 900) => {
+    const dx = P2.x - P1.x, dy = P2.y - P1.y;
+    const len = Math.hypot(dx, dy);
+    if (len < 0.5) return { x1: P1.x, y1: P1.y, x2: P1.x, y2: P1.y };
+    const ux = dx / len, uy = dy / len;
+    return {
+      x1: P1.x - ux * length, y1: P1.y - uy * length,
+      x2: P2.x + ux * length, y2: P2.y + uy * length
+    };
+  };
+
+  const line = extendLine(O, H);
+  const OM = dist(O, M), MH = dist(M, H);
+  const isEquilateral = dist(A, B) > 0.1
+    && Math.abs(dist(A, B) - dist(B, C)) < 5
+    && Math.abs(dist(B, C) - dist(A, C)) < 5;
+
+  return (
+    <DemoFrame
+      title="фиг. 06 · O — M — H са колинеарни"
+      badge="три точки · една права"
+      badgeColor="#1a1815"
+      hint="↳ за равностранен триъгълник трите точки съвпадат"
+    >
+      <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+        <GridPattern id="grid-e"/>
+        <defs>
+          <linearGradient id="tri-fill-e" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stopColor="#e63946" stopOpacity="0.10"/>
+            <stop offset="50%"  stopColor="#1d6fb8" stopOpacity="0.10"/>
+            <stop offset="100%" stopColor="#a435c4" stopOpacity="0.10"/>
+          </linearGradient>
+          <clipPath id="clip-e"><rect x="0" y="0" width="600" height="410"/></clipPath>
+        </defs>
+        <rect width="600" height="410" fill="url(#grid-e)"/>
+
+        <g clipPath="url(#clip-e)">
+          {!isEquilateral && (
+            <line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2}
+                  stroke="#1a1815" strokeWidth="3" opacity="1" strokeLinecap="round" pointerEvents="none"/>
+          )}
+        </g>
+
+        <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                 fill="url(#tri-fill-e)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+
+        {['A', 'B', 'C'].map(label =>
+          <DraggableVertex key={label} p={points[label]} label={label} centroid={M} onDown={handleDown(label)}/>
+        )}
+
+        <InteractiveCenter p={O} label="O" color="#1d6fb8" leftSide={O.x < M.x} infoTitle="Описана" infoText="Център на описаната окръжност. Винаги лежи на Правата на Ойлер." />
+        <InteractiveCenter p={M} label="M" color="#e63946" infoTitle="Медицентър" infoText="Винаги лежи между O и H, като дели отсечката OH в строго отношение 1:2." />
+        <InteractiveCenter p={H} label="H" color="#a435c4" leftSide={H.x < M.x} infoTitle="Ортоцентър" infoText="Пресечна точка на височините. Винаги лежи на Правата на Ойлер." />
+
+        <InfoBox x={15} y={15} w={205} accent="#1a1815">
+          <text x="25" y="33" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700"
+                fill="#1a1815" opacity="0.7" letterSpacing="1.5">ОТНОШЕНИЕ OM : MH</text>
+          <text x="25" y="60" fontFamily="Fraunces" fontSize="22" fill="#1a1815" fontWeight="700">
+            {OM.toFixed(0)} : {MH.toFixed(0)}
+          </text>
+          <text x="25" y="76" fontFamily="JetBrains Mono" fontSize="9" fontWeight="600"
+                fill="#1a1815" opacity="0.75">
+            ≈ 1 : {OM > 0.5 ? (MH/OM).toFixed(2) : '—'}
+          </text>
+        </InfoBox>
+
+        <DragHint/>
+      </svg>
+    </DemoFrame>
+  );
+}
+
+/* ============================================================
+   07 — СПЕЦИАЛНИ СЛУЧАИ
+   ============================================================ */
+
+function SpecialCasesDemo() {
+  const [mode, setMode] = useState('isosceles');
+
+  return (
+    <div>
+      <div className="flex gap-3 mb-8 flex-wrap">
+        {[
+          { id: 'isosceles',   label: 'Равнобедрен',   subtitle: 'AC = BC',         color: '#f59100', dark: '#b86700' },
+          { id: 'equilateral', label: 'Равностранен',  subtitle: 'AB = BC = CA',    color: '#e63946', dark: '#a01622' },
+        ].map(t => (
+          <button
+            key={t.id}
+            onClick={() => setMode(t.id)}
+            className={`btn-3d-mini ${mode === t.id ? 'active' : ''}`}
+            style={{
+              '--mini-color': t.color,
+              '--mini-color-dark': t.dark,
+              padding: '14px 24px'
+            }}
+          >
+            <div className="font-display text-base font-semibold normal-case tracking-normal">
+              {t.label}
+            </div>
+            <div className="font-mono text-[9px] tracking-wider opacity-80 mt-0.5">
+              {t.subtitle}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {mode === 'isosceles' ? <IsoscelesCase/> : <EquilateralCase/>}
+    </div>
+  );
+}
+
+function IsoscelesCase() {
+  const [points, setPoints] = useState({
+    A: { x: 140, y: 320 },
+    B: { x: 460, y: 320 },
+    C: { x: 300, y: 80 },
+  });
+  const [dragging, setDragging] = useState(null);
+  const svgRef = useRef(null);
+
+  const { A, B, C } = points;
+
+  const getCoords = (e) => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    const pt = svg.createSVGPoint();
+    if (e.touches && e.touches.length > 0) {
+      pt.x = e.touches[0].clientX;
+      pt.y = e.touches[0].clientY;
+    } else {
+      pt.x = e.clientX;
+      pt.y = e.clientY;
+    }
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  };
+
+  useEffect(() => {
+    if (!dragging) return;
+
+    const handleMove = (e) => {
+      e.preventDefault();
+      const c = getCoords(e);
+      if (!c) return;
+      const x = Math.max(40, Math.min(560, c.x));
+      const y = Math.max(40, Math.min(380, c.y));
+
+      setPoints(prev => {
+        if (dragging === 'C') {
+          const newAxisX = x;
+          const halfBase = (prev.B.x - prev.A.x) / 2;
+          return {
+            A: { x: newAxisX - halfBase, y: prev.A.y },
+            B: { x: newAxisX + halfBase, y: prev.A.y },
+            C: { x, y: Math.min(y, prev.A.y - 20) },
+          };
+        }
+
+        if (dragging === 'A') {
+          const newAxisX = prev.C.x;
+          const half = Math.max(40, newAxisX - x);
+          const newY = Math.max(prev.C.y + 30, y);
+          return {
+            A: { x: newAxisX - half, y: newY },
+            B: { x: newAxisX + half, y: newY },
+            C: prev.C,
+          };
+        }
+
+        if (dragging === 'B') {
+          const newAxisX = prev.C.x;
+          const half = Math.max(40, x - newAxisX);
+          const newY = Math.max(prev.C.y + 30, y);
+          return {
+            A: { x: newAxisX - half, y: newY },
+            B: { x: newAxisX + half, y: newY },
+            C: prev.C,
+          };
+        }
+
+        return prev;
+      });
+    };
+
+    const handleUp = () => setDragging(null);
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup',   handleUp);
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchend',  handleUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup',   handleUp);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchcancel',  handleUp);
+    };
+  }, [dragging]);
+
+  const M = centroid(A, B, C);
+  const O = circumcenter(A, B, C);
+  const I = incenter(A, B, C);
+  const H = orthocenter(A, B, C);
+  const axisX = C.x;
+
+  return (
+    <div className="grid md:grid-cols-2 gap-8 items-start">
+      <div className="bg-[#fdfcf7] border-2 border-[#1a1815]/25 rounded-md overflow-hidden
+                      shadow-[0_30px_60px_-15px_rgba(0,0,0,0.22),0_8px_0_0_rgba(26,24,21,0.1)]"
+           style={{ borderTopColor: '#f59100', borderTopWidth: '4px' }}>
+
+        <div className="px-5 py-3 border-b-2 border-[#1a1815]/10 font-mono text-[10px]
+                        tracking-widest uppercase opacity-75 font-bold
+                        bg-gradient-to-b from-[#fdfcf7] to-[#f4f1ea]/60">
+          фиг. 07 · равнобедрен триъгълник AC = BC
+        </div>
+
+        <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+          <GridPattern id="grid-iso" accent="#f59100"/>
+          <defs>
+            <linearGradient id="tri-fill-iso" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stopColor="#f59100" stopOpacity="0.16"/>
+              <stop offset="100%" stopColor="#f59100" stopOpacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="410" fill="url(#grid-iso)"/>
+
+          <line x1={axisX} y1="20" x2={axisX} y2="395"
+                stroke="#f59100" strokeWidth="2.5" strokeDasharray="9,5" opacity="0.85" pointerEvents="none"/>
+          <text x={axisX + 11} y="35" fontFamily="JetBrains Mono" fontSize="10" fontWeight="700"
+                fill="#f59100" opacity="1" letterSpacing="1.5" pointerEvents="none">ОС НА СИМЕТРИЯ</text>
+
+          <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                   fill="url(#tri-fill-iso)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+
+          {[
+            { p: A, label: 'A', key: 'A' },
+            { p: B, label: 'B', key: 'B' },
+            { p: C, label: 'C', key: 'C' },
+          ].map(v => (
+            <DraggableVertex
+              key={v.key} p={v.p} label={v.label} centroid={M}
+              onDown={(e) => { e.preventDefault(); e.stopPropagation(); setDragging(v.key); }}
+            />
+          ))}
+
+          <InteractiveCenter p={M} color="#e63946" label="M" leftSide={false} infoTitle="Медицентър" infoText="Лежи точно върху оста на симетрия." />
+          <InteractiveCenter p={O} color="#1d6fb8" label="O" leftSide={true}  infoTitle="Описана" infoText="Лежи точно върху оста на симетрия." />
+          <InteractiveCenter p={I} color="#5fb83a" label="I" leftSide={false} infoTitle="Вписана" infoText="Лежи точно върху оста на симетрия." />
+          <InteractiveCenter p={H} color="#a435c4" label="H" leftSide={true}  infoTitle="Ортоцентър" infoText="Лежи точно върху оста на симетрия." />
+
+          <DragHint/>
+        </svg>
+
+        <div className="px-5 py-3 border-t-2 border-[#1a1815]/10 font-mono text-[10px]
+                        tracking-wider uppercase opacity-70 font-bold
+                        bg-gradient-to-b from-[#f4f1ea]/40 to-[#fdfcf7]">
+          ↳ M, O, I, H лежат на оста на симетрия (височината от C)
+        </div>
+      </div>
+
+      <div className="space-y-5">
+        <div className="font-display text-2xl leading-snug">
+          В равнобедрен триъгълник четирите забележителни точки{' '}
+          <span className="font-serif-it italic">винаги</span>{' '}
+          лежат на една и съща права.
+        </div>
+
+        <div className="space-y-3">
+          <Property color="#f59100" title="Ос на симетрия">
+            Височината, медианата, ъглополовящата и симетралата, спуснати от върха C, съвпадат —
+            всички те лежат на оста на симетрия на триъгълника.
+          </Property>
+          <Property color="#1a1815" title="Колинеарност">
+            Точките M, O, I и H лежат на тази обща права. Това е специален случай на правата на Ойлер,
+            върху която е и центърът на вписаната окръжност.
+          </Property>
+          <Property color="#1a1815" title="Равенство на ъглите при основата">
+            ∠CAB = ∠CBA — следствие от равенството на бедрата.
+          </Property>
+        </div>
+
+        <div className="p-5 bg-[#fdfcf7] border-2 border-[#1a1815]/15 rounded-md
+                        shadow-[0_3px_0_0_rgba(26,24,21,0.12)]"
+             style={{ borderLeftColor: '#f59100', borderLeftWidth: '5px' }}>
+          <div className="font-mono text-[10px] tracking-widest uppercase opacity-70 mb-2 font-bold">
+            наблюдение
+          </div>
+          <p className="font-display text-base">
+            Влачи всеки от върховете A, B или C — забележи как четирите точки <em>винаги</em>{' '}
+            остават върху оста на симетрия.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EquilateralCase() {
+  const [points, setPoints] = useState({
+    A: { x: 300, y: 80 },
+    B: { x: 300 + 140 * Math.cos(Math.PI / 6), y: 220 + 140 * Math.sin(Math.PI / 6) },
+    C: { x: 300 - 140 * Math.cos(Math.PI / 6), y: 220 + 140 * Math.sin(Math.PI / 6) },
+  });
+  const [dragging, setDragging] = useState(null);
+  const [centerOpen, setCenterOpen] = useState(false);
+  const svgRef = useRef(null);
+
+  const { A, B, C } = points;
+  const center = centroid(A, B, C);
+  const size = dist(center, A);
+
+  const getCoords = (e) => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    const pt = svg.createSVGPoint();
+    if (e.touches && e.touches.length > 0) {
+      pt.x = e.touches[0].clientX;
+      pt.y = e.touches[0].clientY;
+    } else {
+      pt.x = e.clientX;
+      pt.y = e.clientY;
+    }
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  };
+
+  useEffect(() => {
+    if (dragging === null) return;
+
+    const handleMove = (e) => {
+      e.preventDefault();
+      const c = getCoords(e);
+      if (!c) return;
+      const x = Math.max(40, Math.min(560, c.x));
+      const y = Math.max(40, Math.min(380, c.y));
+
+      setPoints(prev => {
+        const ctr = centroid(prev.A, prev.B, prev.C);
+
+        if (dragging === 'center') {
+          const dx = x - ctr.x, dy = y - ctr.y;
+          return {
+            A: { x: prev.A.x + dx, y: prev.A.y + dy },
+            B: { x: prev.B.x + dx, y: prev.B.y + dy },
+            C: { x: prev.C.x + dx, y: prev.C.y + dy },
+          };
+        }
+
+        const newDx = x - ctr.x, newDy = y - ctr.y;
+        const newSize = Math.max(50, Math.min(180, Math.hypot(newDx, newDy)));
+        const newAngle = Math.atan2(newDy, newDx);
+        const idx = { A: 0, B: 1, C: 2 }[dragging];
+        const baseAngle = newAngle - idx * 2 * Math.PI / 3;
+
+        return {
+          A: { x: ctr.x + newSize * Math.cos(baseAngle),                    y: ctr.y + newSize * Math.sin(baseAngle) },
+          B: { x: ctr.x + newSize * Math.cos(baseAngle + 2 * Math.PI / 3), y: ctr.y + newSize * Math.sin(baseAngle + 2 * Math.PI / 3) },
+          C: { x: ctr.x + newSize * Math.cos(baseAngle + 4 * Math.PI / 3), y: ctr.y + newSize * Math.sin(baseAngle + 4 * Math.PI / 3) },
+        };
+      });
+    };
+
+    const handleUp = () => setDragging(null);
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup',   handleUp);
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchend',  handleUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup',   handleUp);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchcancel',  handleUp);
+    };
+  }, [dragging]);
+
+  const r = size / 2;
+  const R = size;
+  const sideLen = size * Math.sqrt(3);
+
+  return (
+    <div className="grid md:grid-cols-2 gap-8 items-start">
+      <div className="bg-[#fdfcf7] border-2 border-[#1a1815]/25 rounded-md overflow-hidden
+                      shadow-[0_30px_60px_-15px_rgba(0,0,0,0.22),0_8px_0_0_rgba(26,24,21,0.1)]"
+           style={{ borderTopColor: '#e63946', borderTopWidth: '4px' }}>
+
+        <div className="px-5 py-3 border-b-2 border-[#1a1815]/10 font-mono text-[10px]
+                        tracking-widest uppercase opacity-75 font-bold
+                        bg-gradient-to-b from-[#fdfcf7] to-[#f4f1ea]/60">
+          фиг. 08 · равностранен триъгълник AB = BC = CA
+        </div>
+
+        <svg ref={svgRef} viewBox="0 0 600 410" className="w-full bg-[#fdfcf7]" style={{ touchAction: 'none' }}>
+          <GridPattern id="grid-eq" accent="#e63946"/>
+          <defs>
+            <radialGradient id="eq-incircle" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#5fb83a" stopOpacity="0.40"/>
+              <stop offset="100%" stopColor="#5fb83a" stopOpacity="0.14"/>
+            </radialGradient>
+            <radialGradient id="eq-circumcircle" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#1d6fb8" stopOpacity="0.04"/>
+              <stop offset="100%" stopColor="#1d6fb8" stopOpacity="0.18"/>
+            </radialGradient>
+            <linearGradient id="tri-fill-eq" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stopColor="#e63946" stopOpacity="0.16"/>
+              <stop offset="100%" stopColor="#f59100" stopOpacity="0.10"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="410" fill="url(#grid-eq)"/>
+
+          {[A, B, C].map((v, i) => {
+            const opp = [midpoint(B, C), midpoint(C, A), midpoint(A, B)][i];
+            const dx = opp.x - v.x, dy = opp.y - v.y;
+            const len = Math.hypot(dx, dy);
+            if (len < 0.1) return null;
+            const ux = dx / len, uy = dy / len;
+            const L = 400;
+            return (
+              <line key={i}
+                    x1={v.x - ux * L} y1={v.y - uy * L}
+                    x2={v.x + ux * L} y2={v.y + uy * L}
+                    stroke="#f59100" strokeWidth="2" strokeDasharray="7,5" opacity="0.7" pointerEvents="none"/>
+            );
+          })}
+
+          <circle cx={center.x} cy={center.y} r={R}
+                  fill="url(#eq-circumcircle)" stroke="#1d6fb8" strokeWidth="2.5" strokeDasharray="5,4" pointerEvents="none"/>
+          <circle cx={center.x} cy={center.y} r={r}
+                  fill="url(#eq-incircle)" stroke="#5fb83a" strokeWidth="3" pointerEvents="none"/>
+
+          <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
+                   fill="url(#tri-fill-eq)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+
+          {[
+            { p: A, label: 'A', key: 'A' },
+            { p: B, label: 'B', key: 'B' },
+            { p: C, label: 'C', key: 'C' },
+          ].map(v => (
+            <DraggableVertex
+              key={v.key} p={v.p} label={v.label} centroid={center}
+              onDown={(e) => { e.preventDefault(); e.stopPropagation(); setDragging(v.key); }}
+            />
+          ))}
+
+          {/* Интерактивен общ център, комбиниращ tooltips и drag */}
+          <g onMouseEnter={() => setCenterOpen(true)} onMouseLeave={() => setCenterOpen(false)}>
+            <circle cx={center.x} cy={center.y} r="24" fill="#1a1815" opacity={centerOpen ? "0.25" : "0.15"} style={{ transition: 'all 0.3s ease' }}/>
+            <circle cx={center.x} cy={center.y} r="12" fill="#1a1815" stroke="#fdfcf7" strokeWidth="3"/>
+            <circle cx={center.x} cy={center.y} r="3.5" fill="#fdfcf7"/>
+            <text x={center.x + 18} y={center.y - 16}
+                  fontFamily="Fraunces" fontWeight="700" fontStyle="italic" fontSize="16"
+                  fill="#1a1815" stroke="#fdfcf7" strokeWidth="3.5" paintOrder="stroke">
+              M = O = I = H
+            </text>
+
+            <circle cx={center.x} cy={center.y} r="40" fill="transparent"
+                    onMouseDown={(e) => { e.preventDefault(); setDragging('center'); }}
+                    onTouchStart={(e) => { e.preventDefault(); setDragging('center'); }}
+                    style={{ cursor: 'move' }}/>
+
+            {centerOpen && (
+              <foreignObject x={center.x > 300 ? center.x - 280 : center.x + 20}
+                             y={center.y > 200 ? center.y - 180 : center.y + 20}
+                             width="280" height="200" className="overflow-visible pointer-events-none">
+                <div className="bg-[#fdfcf7] text-[#1a1815] p-5 rounded-xl shadow-[0_15px_35px_-5px_rgba(0,0,0,0.15)] border border-[#1a1815]/10 border-l-4 animate-tooltip-pop"
+                     style={{ borderLeftColor: '#1a1815' }}>
+                  <div className="font-mono text-[11px] uppercase tracking-widest mb-3 font-bold" style={{ color: '#1a1815' }}>Общ Център</div>
+                  <div className="font-display text-[16px] leading-relaxed opacity-95">
+                    В равностранния триъгълник всички забележителни точки напълно съвпадат в една единствена точка.
+                  </div>
+                </div>
+              </foreignObject>
+            )}
+          </g>
+
+          <text x="50%" y="395" textAnchor="middle"
+                fontFamily="JetBrains Mono" fontSize="10" fontWeight="700" letterSpacing="2"
+                fill="#1a1815" opacity="0.7" pointerEvents="none">
+            ↔ ВЛАЧИ ВЪРХ ЗА ВЪРТЕНЕ И МАЩАБ · ВЛАЧИ ЦЕНТЪР ЗА ПОЗИЦИЯ
+          </text>
+        </svg>
+
+        <div className="px-5 py-3 border-t-2 border-[#1a1815]/10 font-mono text-[10px]
+                        tracking-wider uppercase opacity-70 font-bold
+                        bg-gradient-to-b from-[#f4f1ea]/40 to-[#fdfcf7]">
+          ↳ четирите забележителни точки съвпадат в една обща точка
+        </div>
+      </div>
+
+      <div className="space-y-5">
+        <div className="font-display text-2xl leading-snug">
+          В равностранен триъгълник медицентърът, ортоцентърът и центровете
+          на вписаната и описаната окръжност <span className="font-serif-it italic">съвпадат</span>.
+        </div>
+
+        <div className="space-y-3">
+          <Property color="#1a1815" title="Една обща точка">
+            M = O = I = H. Това е единственият случай в геометрията, в който и четирите забележителни точки съвпадат.
+          </Property>
+          <Property color="#f59100" title="Три оси на симетрия">
+            Всяка медиана съвпада с височината, ъглополовящата и симетралата от съответния връх — оттук и три оси на симетрия.
+          </Property>
+          <Property color="#1d6fb8" title="Връзка между радиусите">
+            R = 2r. Радиусът на описаната окръжност е точно два пъти радиусът на вписаната.
+          </Property>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <Stat label="страна a" value={sideLen.toFixed(0)} color="#1a1815"/>
+          <Stat label="радиус R" value={R.toFixed(0)}      color="#1d6fb8"/>
+          <Stat label="радиус r" value={r.toFixed(0)}      color="#5fb83a"/>
+        </div>
+
+        <div className="p-5 bg-[#fdfcf7] border-2 border-[#1a1815]/15 rounded-md
+                        shadow-[0_3px_0_0_rgba(26,24,21,0.12)]"
+             style={{ borderLeftColor: '#1a1815', borderLeftWidth: '5px' }}>
+          <div className="font-mono text-[10px] tracking-widest uppercase opacity-70 mb-2 font-bold">
+            формули
+          </div>
+          <div className="font-display text-base space-y-1">
+            <div>R = a / √3</div>
+            <div>r = a / (2√3)</div>
+            <div className="font-serif-it font-semibold" style={{ color: '#e63946' }}>
+              R / r = {(R/r).toFixed(2)} = 2
+            </div>
+          </div>
+        </div>
+
+        <div className="p-5 bg-[#fdfcf7] border-2 border-[#1a1815]/15 rounded-md
+                        shadow-[0_3px_0_0_rgba(26,24,21,0.12)]"
+             style={{ borderLeftColor: '#f59100', borderLeftWidth: '5px' }}>
+          <div className="font-mono text-[10px] tracking-widest uppercase opacity-70 mb-2 font-bold">
+            наблюдение
+          </div>
+          <p className="font-display text-base">
+            Влачи кой да е от трите върха — триъгълникът се завърта и мащабира,
+            но винаги остава равностранен. Посочи центъра с мишката за инфо.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Property({ color, title, children }) {
+  return (
+    <div className="border-l-4 pl-4 py-2 bg-[#fdfcf7]/60 rounded-r"
+         style={{ borderColor: color }}>
+      <div className="font-mono text-[10px] tracking-widest uppercase opacity-70 mb-1 font-bold">
+        {title}
+      </div>
+      <p className="font-display text-base leading-relaxed">{children}</p>
+    </div>
+  );
+}
+
+function Stat({ label, value, color }) {
+  return (
+    <div className="bg-[#fdfcf7] border-2 border-[#1a1815]/15 px-3 py-3 rounded-md
+                    shadow-[0_3px_0_0_rgba(26,24,21,0.12)]">
+      <div className="font-mono text-[9px] tracking-widest uppercase opacity-70 font-bold">
+        {label}
+      </div>
+      <div className="font-display text-2xl mt-1 font-semibold" style={{ color }}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   08 — ТЕСТ ЗА САМОПРОВЕРКА
+   ============================================================ */
+
+const MASTER_QUESTIONS = [
+  {
+    q: 'Кои забележителни точки винаги се намират вътре в триъгълника?',
+    options: ['M и O', 'M и I', 'O и H', 'I и H'],
+    correct: 1,
+    explain: 'Медицентърът M и центърът на вписаната окръжност I винаги са вътре в триъгълника. ' +
+             'O и H могат да бъдат извън него при тъпоъгълен триъгълник.'
+  },
+  {
+    q: 'Как медицентърът разделя медианата, считано от върха на триъгълника?',
+    options: ['1 : 1', '2 : 1', '1 : 2', '3 : 1'],
+    correct: 1,
+    explain: 'Медицентърът дели всяка от медианите в отношение 2 : 1, считано от върха на триъгълника — ' +
+             'разстоянието от върха до M е два пъти разстоянието от M до средата на срещуположната страна.'
+  },
+  {
+    q: 'Колко на брой са допирателните окръжности на един триъгълник (вписана + външно вписани)?',
+    options: ['1', '3', '4', '6'],
+    correct: 2,
+    explain: 'Един триъгълник има точно четири допирателни окръжности: една вписана (вътре в триъгълника) ' +
+             'и три външно вписани (всяка срещу един от върховете).'
+  },
+  {
+    q: 'Центърът Iₐ на външно вписаната окръжност срещу върха A е пресечната точка на:',
+    options: [
+      'трите вътрешни ъглополовящи',
+      'вътрешната ъглополовяща при A и външните при B и C',
+      'външните ъглополовящи на трите ъгъла',
+      'симетралите на трите страни'
+    ],
+    correct: 1,
+    explain: 'Центърът Iₐ е пресечната точка на вътрешната ъглополовяща при A и външните ъглополовящи при B и C. ' +
+             'Тази окръжност е равноотдалечена от страната BC и от продълженията на AB и AC.'
+  },
+  {
+    q: 'Кое твърдение е вярно за равнобедрен триъгълник с AC = BC?',
+    options: [
+      'Точките M, O, I и H образуват малък триъгълник',
+      'Точките M, O, I и H лежат на височината от C',
+      'Точките M, O, I и H съвпадат',
+      'Правата на Ойлер не съществува'
+    ],
+    correct: 1,
+    explain: 'В равнобедрения триъгълник всичките четири забележителни точки лежат на оста на симетрия — ' +
+             'височината, спусната от върха при равните бедра.'
+  },
+  {
+    q: 'Какво е характерно за забележителните точки в равностранен триъгълник?',
+    options: [
+      'Те образуват равностранен триъгълник',
+      'Те лежат на правата на Ойлер',
+      'M = O = I = H — всички съвпадат',
+      'Само M и I съвпадат'
+    ],
+    correct: 2,
+    explain: 'В равностранен триъгълник четирите забележителни точки съвпадат в една обща точка — ' +
+             'центъра на симетрия. Това е единственият триъгълник с такова свойство.'
+  },
+  {
+    q: 'За равностранен триъгълник със страна a, какво е отношението R / r на радиусите на описаната и вписаната окръжност?',
+    options: ['1', '√2', '2', '√3'],
+    correct: 2,
+    explain: 'За равностранен триъгълник: R = a/√3 и r = a/(2√3), следователно R/r = 2. ' +
+             'Това отношение е същото като при правилен шестоъгълник.'
+  },
+  {
+    q: 'При кой вид триъгълник ортоцентърът H съвпада с върха?',
+    options: ['Остроъгълен', 'Правоъгълен', 'Тъпоъгълен', 'Равнобедрен'],
+    correct: 1,
+    explain: 'При правоъгълен триъгълник H съвпада с върха при правия ъгъл, ' +
+             'защото двете катети са едновременно височини на триъгълника.'
+  },
+  {
+    q: 'Къде се намира центърът на описаната окръжност при правоъгълен триъгълник?',
+    options: ['Извън триъгълника', 'Вътре в триъгълника', 'Средата на хипотенузата', 'Съвпада с правия ъгъл'],
+    correct: 2,
+    explain: 'При правоъгълен триъгълник центърът на описаната окръжност лежи точно в средата на хипотенузата.'
+  },
+  {
+    q: 'Кои отсечки се пресичат в центъра на вписаната окръжност?',
+    options: ['Височините', 'Медианите', 'Симетралите', 'Ъглополовящите'],
+    correct: 3,
+    explain: 'Центърът на вписаната окръжност (I) е пресечната точка на вътрешните ъглополовящи.'
+  },
+  {
+    q: 'Коя точка е известна като "център на тежестта" на триъгълника?',
+    options: ['Ортоцентърът', 'Медицентърът', 'Центърът на вписаната окръжност', 'Центърът на описаната окръжност'],
+    correct: 1,
+    explain: 'Медицентърът се явява център на тежестта (баланса) на триъгълника, ако го разглеждаме като хомогенна плоча.'
+  },
+  {
+    q: 'От кои три точки е съставена Правата на Ойлер?',
+    options: ['M, O и H', 'M, I и O', 'I, O и H', 'A, B и C'],
+    correct: 0,
+    explain: 'Правата на Ойлер минава през медицентъра (M), центъра на описаната окръжност (O) и ортоцентъра (H).'
+  }
+];
+
+function Quiz() {
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const loadRandomQuestions = () => {
+    // Избираме 5 случайни въпроса от списъка (разбъркано)
+    const shuffled = [...MASTER_QUESTIONS].sort(() => 0.5 - Math.random());
+    setQuestions(shuffled.slice(0, 5));
+    setAnswers({});
+    setSubmitted(false);
+  };
+
+  useEffect(() => {
+    loadRandomQuestions();
+  }, []);
+
+  const score = Object.entries(answers).filter(([i, a]) => questions[i].correct === a).length;
+
+  if (questions.length === 0) return null;
+
+  return (
+    <div className="space-y-8">
+      {questions.map((item, i) => (
+        <div key={i} className="border-l-2 border-[#1a1815]/15 pl-6">
+          <div className="flex items-baseline gap-3 mb-4">
+            <span className="font-mono text-xs tracking-widest opacity-55 font-bold">0{i + 1}</span>
+            <h3 className="font-display text-xl md:text-2xl leading-snug">{item.q}</h3>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-3 mt-4">
+            {item.options.map((opt, j) => {
+              const selected  = answers[i] === j;
+              const isCorrect = submitted && j === item.correct;
+              const isWrong   = submitted && selected && j !== item.correct;
+              const cls = `btn-quiz-3d ${isCorrect ? 'correct' : isWrong ? 'wrong' : selected ? 'selected' : ''}`;
+
+              return (
+                <button
+                  key={j}
+                  onClick={() => !submitted && setAnswers(a => ({ ...a, [i]: j }))}
+                  disabled={submitted}
+                  className={cls}
+                >
+                  <span className="font-mono text-[10px] opacity-65 mr-2 font-bold">
+                    {String.fromCharCode(65 + j)}.
+                  </span>
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+
+          {submitted && (
+            <div className="mt-4 p-4 bg-[#fdfcf7] border-l-2 border-[#1a1815]/30
+                            font-display text-[15px] leading-relaxed opacity-95 rounded-r shadow-sm">
+              <span className="font-serif-it font-bold">обяснение — </span>{item.explain}
+            </div>
+          )}
+        </div>
+      ))}
+
+      <div className="pt-8 border-t border-[#1a1815]/15">
+        {!submitted ? (
+          <button
+            onClick={() => setSubmitted(true)}
+            disabled={Object.keys(answers).length < questions.length}
+            className="btn-3d-large"
+            style={{ '--accent': '#5fb83a', '--accent-dark': '#3d7c22' }}
+          >
+            <span>провери отговорите</span>
+            <span style={{ opacity: 0.7 }}>({Object.keys(answers).length}/{questions.length})</span>
+          </button>
+        ) : (
+          <div className="space-y-4">
+            <div className="font-display text-5xl md:text-7xl">
+              {score}<span className="font-serif-it text-3xl opacity-65"> / {questions.length}</span>
+            </div>
+            <div className="font-display text-xl opacity-85">
+              {score === questions.length ? 'Безупречно. Геометрията е твоя.' :
+               score >= (questions.length - 1) ? 'Отлично владеене на материала.' :
+               score >= (questions.length / 2) ? 'Добро начало — превърти нагоре и пробвай отново.' :
+                                                 'Прегледай разделите още веднъж — всяка точка крие тайна.'}
+            </div>
+            <button
+              onClick={loadRandomQuestions}
+              className="btn-3d-large mt-4"
+              style={{ '--accent': '#1d6fb8', '--accent-dark': '#11487a' }}
+            >
+              <span>нови въпроси</span>
+              <span style={{ fontSize: '14px' }}>↺</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(TriangleLesson));
+</script>
+
+</body>
+</html>

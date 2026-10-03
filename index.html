@@ -450,18 +450,12 @@ function TriangleLesson() {
             <Pill color="#e63946">медицентър</Pill>
             <Pill color="#1d6fb8">описана</Pill>
             <Pill color="#5fb83a">вписана</Pill>
-            <Pill color="#f59100">външновписани ★</Pill>
             <Pill color="#a435c4">ортоцентър</Pill>
-            <Pill color="#1a1815">права на Ойлер ★</Pill>
           </div>
 
-          <div className="mt-6 max-w-xl">
-            <AdvancedBadge/>
-            <p className="font-display text-base mt-3 leading-relaxed opacity-85">
-              Темите, отбелязани със <strong>★</strong> (външновписани окръжности и правата на Ойлер),
-              са <strong>за ученици с повишен интерес</strong> — ще ги намериш в края на урока, в частта „За любознателните ★“.
-            </p>
-          </div>
+          <p className="font-display text-sm mt-5 max-w-2xl leading-relaxed opacity-70">
+            ★ <em>За ученици с повишен интерес:</em> права на Ойлер и външновписани окръжности — в края на урока.
+          </p>
 
           <div className="mt-10 p-5 bg-[#1a1815]/5 border-l-4 border-[#1a1815] max-w-md rounded-r">
             <div className="font-mono text-[10px] tracking-widest uppercase opacity-65 mb-2 font-bold">
@@ -704,7 +698,7 @@ function TriangleLesson() {
           </div>
           <h2 className="font-display font-light leading-[0.9] mb-12"
               style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
-            Провери се <span className="font-serif-it italic">и тук</span> ★
+            Провери какво <span className="font-serif-it italic">откри</span> ★
           </h2>
           <Quiz pool={MASTER_QUESTIONS.filter(q => q.advanced)} count={3}/>
         </div>

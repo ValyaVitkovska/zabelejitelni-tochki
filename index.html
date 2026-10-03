@@ -72,7 +72,7 @@ function TriangleLesson() {
     { id: 'centroid',     label: 'Медицентър',     num: '01', color: '#e63946' },
     { id: 'circumcenter', label: 'Описана',        num: '02', color: '#1d6fb8' },
     { id: 'incenter',     label: 'Вписана',        num: '03', color: '#5fb83a' },
-    { id: 'excircles',    label: 'Външно вписани', num: '04', color: '#f59100', advanced: true },
+    { id: 'excircles',    label: 'Външновписани', num: '04', color: '#f59100', advanced: true },
     { id: 'orthocenter',  label: 'Ортоцентър',     num: '05', color: '#a435c4' },
     { id: 'euler',        label: 'Права на Ойлер', num: '06', color: '#1a1815', advanced: true },
     { id: 'special',      label: 'Спец. случаи',   num: '07', color: '#f59100' },
@@ -451,7 +451,7 @@ function TriangleLesson() {
             <Pill color="#e63946">медицентър</Pill>
             <Pill color="#1d6fb8">описана</Pill>
             <Pill color="#5fb83a">вписана</Pill>
-            <Pill color="#f59100">външно вписани ★</Pill>
+            <Pill color="#f59100">външновписани ★</Pill>
             <Pill color="#a435c4">ортоцентър</Pill>
             <Pill color="#1a1815">права на Ойлер ★</Pill>
           </div>
@@ -459,7 +459,7 @@ function TriangleLesson() {
           <div className="mt-6 max-w-xl">
             <AdvancedBadge/>
             <p className="font-display text-base mt-3 leading-relaxed opacity-85">
-              Разделите, отбелязани със <strong>★</strong> (външно вписани окръжности и правата на Ойлер),
+              Разделите, отбелязани със <strong>★</strong> (външновписани окръжности и правата на Ойлер),
               са <strong>за ученици с повишен интерес</strong> — те надхвърлят задължителния материал.
             </p>
           </div>
@@ -500,7 +500,7 @@ function TriangleLesson() {
         title="Медицентър"
         subtitle="Точка на пресичане на медианите"
         accentColor="#e63946"
-        definition="Медианата на триъгълник е отсечка, свързваща връх с средата на срещуположната страна. Трите медиани се пресичат в една точка — медицентъра $M$."
+        definition="Медианата на триъгълник е отсечка, свързваща връх със средата на срещуположната страна. Трите медиани се пресичат в една точка — медицентъра $M$."
         property="Медицентърът дели всяка от медианите в отношение $2:1$, считано от върха на триъгълника. Той е и център на тежестта на триъгълника."
         formula="$AM : MM_1 = 2 : 1$"
       >
@@ -510,7 +510,7 @@ function TriangleLesson() {
       <PointSection
         id="circumcenter"
         number="02"
-        title="Център на описана окръжност"
+        title="Център на описаната окръжност"
         subtitle="Пресечна точка на симетралите"
         accentColor="#1d6fb8"
         definition="Симетралата на отсечка е права, перпендикулярна на отсечката и минаваща през нейната среда. Трите симетрали на страните на триъгълника се пресичат в точка $O$."
@@ -523,7 +523,7 @@ function TriangleLesson() {
             { cond: String.raw`ако $\ang A$ е тъп`,     f: String.raw`$\ang BOC = 360\gr - 2\ang A$` },
           ]}
           why="Триъгълниците $AOB$ и $AOC$ са равнобедрени ($OA = OB = OC = R$). Външните им ъгли при върха $O$ са $2\ang OAB$ и $2\ang OAC$ — събрани (или извадени), дават $2\ang A$."
-          note="Аналогично $\ang COA$ и $\ang AOB$ се изразяват чрез $\ang B$ и $\ang C$."/>
+          note="Тук $\ang BOC$ е изпъкналият ъгъл $BOC$ (не по-голям от $180\gr$). Аналогично $\ang COA$ и $\ang AOB$ се изразяват чрез $\ang B$ и $\ang C$."/>
         }
       >
         <CircumcenterDemo />
@@ -532,7 +532,7 @@ function TriangleLesson() {
       <PointSection
         id="incenter"
         number="03"
-        title="Център на вписана окръжност"
+        title="Център на вписаната окръжност"
         subtitle="Пресечна точка на ъглополовящите"
         accentColor="#5fb83a"
         definition="Ъглополовящата на ъгъл е лъч, който го разделя на два равни ъгъла. Трите вътрешни ъглополовящи се пресичат в точка $I$."
@@ -557,10 +557,10 @@ function TriangleLesson() {
       <PointSection
         id="excircles"
         number="04"
-        title="Външно вписани окръжности"
+        title="Външновписани окръжности"
         subtitle="Три окръжности извън триъгълника"
         accentColor="#f59100"
-        definition="Външно вписана окръжност на триъгълник е окръжност, която се допира до едната страна отвън, а до продълженията на другите две. Има точно три такива окръжности с центрове $I_a$, $I_b$, $I_c$ и радиуси $r_a$, $r_b$, $r_c$."
+        definition="Външновписана окръжност на триъгълник е окръжност, която се допира до една от страните му и до продълженията на другите две страни. Външновписаната срещу върха $A$ окръжност се допира до страната $BC$ и до продълженията на страните $AB$ и $AC$; аналогично за върховете $B$ и $C$. Центровете им са $I_a$, $I_b$, $I_c$, а радиусите — $r_a$, $r_b$, $r_c$."
         property="Центърът $I_a$ е пресечната точка на вътрешната ъглополовяща при върха $A$ и външните ъглополовящи при върховете $B$ и $C$. Заедно с вписаната, всеки триъгълник има четири допирателни окръжности."
         formula="$r_a = \dfrac{S}{p - a}$"
         advanced
@@ -581,10 +581,10 @@ function TriangleLesson() {
           <AngleTheory color="#a435c4" rows={[
             { cond: String.raw`ако $\ang B$ и $\ang C$ са остри`, f: String.raw`$\ang BHC = 180\gr - \ang A$` },
             { cond: String.raw`ако $\ang B$ или $\ang C$ е тъп`,  f: String.raw`$\ang BHC = \ang A$` },
-            { cond: String.raw`ако $\ang A = 90\gr$`,              f: String.raw`$H \equiv A$ — ъгълът не съществува` },
+            { cond: String.raw`ако $\ang A = 90\gr$`,              f: String.raw`$H \equiv A$, затова $\ang BHC = \ang BAC = 90\gr$` },
           ]}
           why="Нека $B_1$ и $C_1$ са петите на височините от $B$ и $C$. В четириъгълника $AC_1HB_1$ ъглите при $C_1$ и $B_1$ са прави, затова $\ang C_1HB_1 = 180\gr - \ang A$, а $\ang BHC$ е връхен на него (при остроъгълен триъгълник)."
-          note="Първият ред важи и когато $\ang A$ е тъп. Аналогично за $\ang CHA$ и $\ang AHB$."/>
+          note="Първият ред важи и когато $\ang A$ е тъп. При $\ang A = 90\gr$ имаме $H \equiv A$ и $\ang BHC = \ang BAC = 90\gr$ (в съгласие и с първия ред: $180\gr - 90\gr = 90\gr$). Аналогично за $\ang CHA$ и $\ang AHB$."/>
         }
       >
         <OrthocenterDemo />
@@ -619,8 +619,7 @@ function TriangleLesson() {
                 <div className="font-display text-3xl"><Tx>$OM : MH = 1 : 2$</Tx></div>
               </div>
               <p className="font-display text-base mt-6 opacity-80 leading-relaxed">
-                При равностранен триъгълник трите центъра <em>съвпадат</em> в една точка —
-                затова правата на Ойлер съществува само за неравностранен триъгълник.
+                <Tx>{String.raw`При равностранен триъгълник $O \equiv M \equiv H$, затова правата на Ойлер не е еднозначно определена.`}</Tx>
               </p>
             </div>
             <div className="md:col-span-7">
@@ -900,7 +899,8 @@ function useInteractiveTriangle(initial) {
     };
   }, [dragging]);
 
-  return { points, setPoints, svgRef, handleDown, dragging };
+  const degenerate = isDegenerate(points.A, points.B, points.C);
+  return { points, setPoints, svgRef, handleDown, dragging, degenerate };
 }
 
 /* ============================================================
@@ -959,6 +959,17 @@ const exradius = (A, B, C, opposite) => {
   if (opposite === 'A') return S / Math.max(0.01, s - a);
   if (opposite === 'B') return S / Math.max(0.01, s - b);
   return S / Math.max(0.01, s - c);
+};
+
+/* Изроден / почти изроден триъгълник: върховете (почти) на една права
+   или два върха (почти) съвпадат. Допуск в единици на чертежа (viewBox 600×410):
+   най-късата страна < 15 или височината към най-дългата страна < 12. */
+const isDegenerate = (A, B, C) => {
+  const a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  const maxS = Math.max(a, b, c), minS = Math.min(a, b, c);
+  if (!isFinite(maxS) || minS < 15) return true;
+  const h = 2 * triangleArea(A, B, C) / maxS;
+  return h < 12;
 };
 
 const orthocenter = (A, B, C) => {
@@ -1024,8 +1035,12 @@ function centerAngleInfo(kind, pts, X, K) {
     result = 90 + aR / 2; formula = `$90\\gr + \\dfrac{${fmt1(aR)}\\gr}{2} = ${fmt1(result)}\\gr$`; caseText = 'винаги';
   } else {
     const obtusePQ = ang[P] > 90.5 || ang[Q] > 90.5;
-    if (tooClose) {
-      formula = '—'; caseText = '$H$ съвпада с връх — няма ъгъл';
+    if (Math.abs(a - 90) < 0.5) {
+      result = 90; formula = `$\\ang ${P}H${Q} = \\ang ${P}${K}${Q} = 90\\gr$`;
+      caseText = `$\\ang ${K} = 90\\gr \\Rightarrow H \\equiv ${K}$`;
+    } else if (tooClose) {
+      const V = dist(X, pts[P]) < 4 ? P : Q;
+      formula = '—'; caseText = `$H \\equiv ${V}$ — едно от рамената на ъгъла не е определено`;
     } else if (obtusePQ) {
       result = aR; formula = `$\\ang ${K} = ${fmt1(aR)}\\gr$`;
       caseText = `$\\ang ${ang[P] > 90.5 ? P : Q}$ е тъп`;
@@ -1077,9 +1092,9 @@ function DraggableVertex({ p, label, onDown, centroid, color = '#1a1815' }) {
       <circle cx={p.x} cy={p.y} r="34" fill="transparent"
               onMouseDown={onDown} onTouchStart={onDown}/>
       <circle cx={p.x} cy={p.y} r="18" fill="none"
-              stroke={color} strokeWidth="1.8" opacity="0.35"/>
-      <circle cx={p.x} cy={p.y} r="10" fill={color} stroke="#fdfcf7" strokeWidth="3"/>
-      <circle cx={p.x} cy={p.y} r="3.5" fill="#fdfcf7"/>
+              stroke={color} strokeWidth="1.8" opacity="0.35" pointerEvents="none"/>
+      <circle cx={p.x} cy={p.y} r="10" fill={color} stroke="#fdfcf7" strokeWidth="3" pointerEvents="none"/>
+      <circle cx={p.x} cy={p.y} r="3.5" fill="#fdfcf7" pointerEvents="none"/>
       <text x={textX} y={textY} textAnchor={anchor} dominantBaseline={baseline}
             fontFamily="Literata, Georgia, serif" fontStyle="italic" fontSize="24" fontWeight="700"
             fill={color} stroke="#fdfcf7" strokeWidth="4" paintOrder="stroke">
@@ -1197,8 +1212,8 @@ function CenterAngleOverlay({ kind, pts, X, sel, color }) {
 }
 
 /* ---------- Панел под чертежа: избор на ъгъл, случаи, проверка ---------- */
-function CenterAnglePanel({ kind, pts, X, sel, setSel, color, presets, setPoints }) {
-  const infos = ['A', 'B', 'C'].map(K => centerAngleInfo(kind, pts, X, K));
+function CenterAnglePanel({ kind, pts, X, sel, setSel, color, presets, setPoints, degenerate = false }) {
+  const infos = degenerate ? [] : ['A', 'B', 'C'].map(K => centerAngleInfo(kind, pts, X, K));
   const dark = darken(color);
   return (
     <div className="mt-4 bg-[#fdfcf7] border-2 border-[#1a1815]/15 rounded-md p-5
@@ -1209,7 +1224,7 @@ function CenterAnglePanel({ kind, pts, X, sel, setSel, color, presets, setPoints
           ъгли при {kind} · избери ъгъл за чертежа
         </div>
         <div className="flex gap-2 flex-wrap">
-          {infos.map(inf => (
+          {!degenerate && infos.map(inf => (
             <button key={inf.K} onClick={() => setSel(inf.K)}
                     className={`btn-3d-mini ${sel === inf.K ? 'active' : ''}`}
                     style={{ '--mini-color': color, '--mini-color-dark': dark, textTransform: 'none' }}>
@@ -1219,6 +1234,11 @@ function CenterAnglePanel({ kind, pts, X, sel, setSel, color, presets, setPoints
         </div>
       </div>
 
+      {degenerate && (
+        <p className="font-display text-base px-3 py-2 rounded" style={{ background: '#fff6d6' }}>
+          Премести един от върховете — трите върха не трябва да лежат на една права.
+        </p>
+      )}
       <div className="space-y-2">
         {infos.map(inf => (
           <div key={inf.K}
@@ -1256,6 +1276,22 @@ function CenterAnglePanel({ kind, pts, X, sel, setSel, color, presets, setPoints
         </div>
       )}
     </div>
+  );
+}
+
+function DegenerateNotice({ cx = 300, cy = 205, scale = 1 }) {
+  const w = 430, h = 64;
+  return (
+    <g pointerEvents="none" transform={`translate(${cx} ${cy}) scale(${scale}) translate(${-w / 2} ${-h / 2})`}>
+      <rect x="3" y="4" width={w} height={h} rx="8" fill="#1a1815" opacity="0.18"/>
+      <rect x="0" y="0" width={w} height={h} rx="8" fill="#fff6d6" stroke="#1a1815" strokeWidth="2"/>
+      <text x={w / 2} y="27" textAnchor="middle" fontFamily="Literata, Georgia, serif" fontSize="16" fontWeight="700" fill="#1a1815">
+        Премести един от върховете —
+      </text>
+      <text x={w / 2} y="49" textAnchor="middle" fontFamily="Literata, Georgia, serif" fontSize="16" fill="#1a1815">
+        трите върха не трябва да лежат на една права.
+      </text>
+    </g>
   );
 }
 
@@ -1340,7 +1376,7 @@ function ExtendedLine({ P1, P2, stroke, opacity, dashed = true, strokeWidth = 1.
    ============================================================ */
 
 function CentroidDemo() {
-  const { points, svgRef, handleDown } = useInteractiveTriangle({
+  const { points, svgRef, handleDown, degenerate } = useInteractiveTriangle({
     A: { x: 300, y: 70 },
     B: { x: 90,  y: 330 },
     C: { x: 510, y: 310 },
@@ -1368,6 +1404,7 @@ function CentroidDemo() {
 
         <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
                  fill="url(#tri-fill-c)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round"/>
+        {!degenerate && (<>
 
         <line x1={A.x} y1={A.y} x2={Ma.x} y2={Ma.y} stroke="#e63946" strokeWidth="3" strokeDasharray="7,4" strokeLinecap="round"/>
         <line x1={B.x} y1={B.y} x2={Mb.x} y2={Mb.y} stroke="#e63946" strokeWidth="3" strokeDasharray="7,4" strokeLinecap="round"/>
@@ -1387,9 +1424,11 @@ function CentroidDemo() {
         <text x={Mc.x - 30} y={Mc.y + 5}  fontFamily="Literata, Georgia, serif" fontStyle="italic" fontWeight="700"
               fontSize="15" fill="#e63946" stroke="#fdfcf7" strokeWidth="3" paintOrder="stroke">M₃</text>
 
+        </>)}
         {['A', 'B', 'C'].map(label =>
           <DraggableVertex key={label} p={points[label]} label={label} centroid={M} onDown={handleDown(label)}/>
         )}
+        {!degenerate && (<>
 
         {/* Интерактивен Център (Сложен след върховете за да е отгоре) */}
         <InteractiveCenter
@@ -1406,6 +1445,8 @@ function CentroidDemo() {
                 fill="#1a1815" opacity="0.75">{`${dist(A, M).toFixed(0)} : ${dist(M, Ma).toFixed(0)}`}</text>
         </InfoBox>
 
+        </>)}
+        {degenerate && <DegenerateNotice/>}
         <DragHint/>
       </svg>
     </DemoFrame>
@@ -1418,7 +1459,7 @@ function CentroidDemo() {
 
 function CircumcenterDemo() {
   const [angSel, setAngSel] = useState('A');
-  const { points, setPoints, svgRef, handleDown } = useInteractiveTriangle({
+  const { points, setPoints, svgRef, handleDown, degenerate } = useInteractiveTriangle({
     A: { x: 300, y: 90 },
     B: { x: 110, y: 320 },
     C: { x: 490, y: 330 },
@@ -1467,6 +1508,7 @@ function CircumcenterDemo() {
           <clipPath id="clip-cc"><rect x="0" y="0" width="600" height="410"/></clipPath>
         </defs>
         <rect width="600" height="410" fill="url(#grid-cc)"/>
+        {!degenerate && (<>
 
         <g clipPath="url(#clip-cc)">
           <circle cx={O.x} cy={O.y} r={R} fill="url(#circle-fill-cc)" stroke="#1d6fb8" strokeWidth="3" pointerEvents="none"/>
@@ -1475,8 +1517,10 @@ function CircumcenterDemo() {
           <line x1={pc.x1} y1={pc.y1} x2={pc.x2} y2={pc.y2} stroke="#1d6fb8" strokeWidth="2" strokeDasharray="6,4" opacity="0.85" pointerEvents="none"/>
         </g>
 
+        </>)}
         <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
                  fill="url(#tri-fill-cc)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+        {!degenerate && (<>
 
         <line x1={O.x} y1={O.y} x2={A.x} y2={A.y} stroke="#1d6fb8" strokeWidth="2" opacity="0.85" pointerEvents="none"/>
         <line x1={O.x} y1={O.y} x2={B.x} y2={B.y} stroke="#1d6fb8" strokeWidth="2" opacity="0.85" pointerEvents="none"/>
@@ -1489,15 +1533,17 @@ function CircumcenterDemo() {
           </g>
         ))}
 
+        </>)}
         {['A', 'B', 'C'].map(label =>
           <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
         )}
+        {!degenerate && (<>
 
         <CenterAngleOverlay kind="O" pts={points} X={O} sel={angSel} color="#1d6fb8"/>
 
         <InteractiveCenter
           p={O} label="O" color="#1d6fb8"
-          infoTitle="Описана Окръжност"
+          infoTitle="Описана окръжност"
           infoText="Пресечна точка на трите симетрали. Точката $O$ се намира на равни разстояния (радиус $R$) от върховете $A$, $B$ и $C$ на триъгълника."
         />
 
@@ -1509,10 +1555,12 @@ function CircumcenterDemo() {
                 fill="#1a1815" opacity="0.75">OA = OB = OC</text>
         </InfoBox>
 
+        </>)}
+        {degenerate && <DegenerateNotice/>}
         <DragHint/>
       </svg>
     </DemoFrame>
-    <CenterAnglePanel kind="O" pts={points} X={O} sel={angSel} setSel={setAngSel}
+    <CenterAnglePanel kind="O" degenerate={degenerate} pts={points} X={O} sel={angSel} setSel={setAngSel}
                       color="#1d6fb8" setPoints={setPoints} presets={[
       { label: String.raw`$\ang A$ остър`,  pts: { A: { x: 300, y: 90 },  B: { x: 110, y: 320 }, C: { x: 490, y: 330 } } },
       { label: String.raw`$\ang A = 90\gr$`,  pts: { A: { x: 245, y: 141.4 }, B: { x: 120, y: 320 }, C: { x: 500, y: 320 } } },
@@ -1528,7 +1576,7 @@ function CircumcenterDemo() {
 
 function IncenterDemo() {
   const [angSel, setAngSel] = useState('A');
-  const { points, setPoints, svgRef, handleDown } = useInteractiveTriangle({
+  const { points, setPoints, svgRef, handleDown, degenerate } = useInteractiveTriangle({
     A: { x: 300, y: 80 },
     B: { x: 100, y: 330 },
     C: { x: 500, y: 320 },
@@ -1581,6 +1629,7 @@ function IncenterDemo() {
 
         <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
                  fill="url(#tri-fill-i)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round"/>
+        {!degenerate && (<>
 
         <circle cx={I.x} cy={I.y} r={r} fill="url(#circle-fill-i)" stroke="#5fb83a" strokeWidth="3" pointerEvents="none"/>
 
@@ -1596,15 +1645,17 @@ function IncenterDemo() {
           <circle key={i} cx={p.x} cy={p.y} r="5" fill="#5fb83a" stroke="#fdfcf7" strokeWidth="2" pointerEvents="none"/>
         ))}
 
+        </>)}
         {['A', 'B', 'C'].map(label =>
           <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
         )}
+        {!degenerate && (<>
 
         <CenterAngleOverlay kind="I" pts={points} X={I} sel={angSel} color="#3d7c22"/>
 
         <InteractiveCenter
           p={I} label="I" color="#5fb83a"
-          infoTitle="Вписана Окръжност"
+          infoTitle="Вписана окръжност"
           infoText="Пресечна точка на вътрешните ъглополовящи. Винаги се намира вътре в триъгълника и е равноотдалечена от трите му страни."
         />
 
@@ -1616,10 +1667,12 @@ function IncenterDemo() {
                 fill="#1a1815" opacity="0.75">d(I, страна) = r</text>
         </InfoBox>
 
+        </>)}
+        {degenerate && <DegenerateNotice/>}
         <DragHint/>
       </svg>
     </DemoFrame>
-    <CenterAnglePanel kind="I" pts={points} X={I} sel={angSel} setSel={setAngSel} color="#5fb83a"/>
+    <CenterAnglePanel kind="I" degenerate={degenerate} pts={points} X={I} sel={angSel} setSel={setAngSel} color="#5fb83a"/>
     </div>
   );
 }
@@ -1629,7 +1682,7 @@ function IncenterDemo() {
    ============================================================ */
 
 function ExcirclesDemo() {
-  const { points, svgRef, handleDown } = useInteractiveTriangle({
+  const { points, svgRef, handleDown, degenerate } = useInteractiveTriangle({
     A: { x: 300, y: 130 },
     B: { x: 200, y: 280 },
     C: { x: 400, y: 270 },
@@ -1709,6 +1762,7 @@ function ExcirclesDemo() {
           </defs>
 
           <rect x="-200" y="-200" width="1000" height="800" fill="url(#grid-ex)"/>
+        {!degenerate && (<>
 
           <g clipPath="url(#clip-ex)">
             <ExtendedLine P1={B} P2={C} stroke="#1a1815" opacity="0.45" strokeWidth="1.5"/>
@@ -1721,43 +1775,47 @@ function ExcirclesDemo() {
             {showWhich.I && <circle cx={I.x}  cy={I.y}  r={r}  fill="url(#ex-fill-i)" stroke="#5fb83a" strokeWidth="3" pointerEvents="none"/>}
           </g>
 
+        </>)}
           <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
                    fill="#fdfcf7" fillOpacity="0.75" stroke="#1a1815" strokeWidth="4" strokeLinejoin="round" pointerEvents="none"/>
 
           {['A', 'B', 'C'].map(label =>
             <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
           )}
+        {!degenerate && (<>
 
           {showWhich.A && (
             <InteractiveCenter p={Ia} label="I_a" color="#f59100"
-              infoTitle="Външно вписана (срещу A)"
-              infoText="Окръжност, допираща се външно до страната $a$ и до продълженията на $b$ и $c$. Пресечна точка на две външни и една вътрешна ъглополовяща."
+              infoTitle="Външновписана (срещу A)"
+              infoText="Външновписаната срещу върха $A$ окръжност се допира до страната $BC$ и до продълженията на страните $AB$ и $AC$. Центърът ѝ е пресечната точка на вътрешната ъглополовяща при $A$ и външните ъглополовящи при $B$ и $C$."
             />
           )}
           {showWhich.B && (
             <InteractiveCenter p={Ib} label="I_b" color="#ff6b00"
-              infoTitle="Външно вписана (срещу B)"
-              infoText="Окръжност, допираща се външно до страната $b$ и до продълженията на $a$ и $c$."
+              infoTitle="Външновписана (срещу B)"
+              infoText="Външновписаната срещу върха $B$ окръжност се допира до страната $CA$ и до продълженията на страните $BA$ и $BC$."
             />
           )}
           {showWhich.C && (
             <InteractiveCenter p={Ic} label="I_c" color="#d04500"
-              infoTitle="Външно вписана (срещу C)"
-              infoText="Окръжност, допираща се външно до страната $c$ и до продълженията на $a$ и $b$."
+              infoTitle="Външновписана (срещу C)"
+              infoText="Външновписаната срещу върха $C$ окръжност се допира до страната $AB$ и до продълженията на страните $CA$ и $CB$."
             />
           )}
           {showWhich.I && (
             <InteractiveCenter p={I} label="I" color="#5fb83a"
-              infoTitle="Вписана Окръжност"
+              infoTitle="Вписана окръжност"
               infoText="Пресечна точка на трите вътрешни ъглополовящи. Допира се вътрешно до трите страни."
             />
           )}
+        </>)}
+        {degenerate && <DegenerateNotice cx={300} cy={200} scale={1.5}/>}
         </svg>
 
         <div className="px-5 py-3 border-t-2 border-[#1a1815]/10 font-mono text-[10px]
                         tracking-wider uppercase opacity-70 font-bold
                         bg-gradient-to-b from-[#f4f1ea]/40 to-[#fdfcf7]">
-          ↳ всяка външно вписана се допира до една страна и до продълженията на другите две
+          ↳ всяка външновписана се допира до една страна и до продълженията на другите две
         </div>
       </div>
 
@@ -1775,7 +1833,7 @@ function ExcirclesDemo() {
               радиус {item.desc}
             </div>
             <div className="font-display text-2xl mt-1 font-semibold" style={{ color: item.color }}>
-              <Tx>{`$${item.label} = ${item.val.toFixed(1).replace('.', '{,}')}$`}</Tx>
+              <Tx>{degenerate ? `$${item.label}$ — не е определен` : `$${item.label} = ${item.val.toFixed(1).replace('.', '{,}')}$`}</Tx>
             </div>
           </div>
         ))}
@@ -1804,7 +1862,7 @@ function ExcirclesDemo() {
 
 function OrthocenterDemo() {
   const [angSel, setAngSel] = useState('A');
-  const { points, setPoints, svgRef, handleDown } = useInteractiveTriangle({
+  const { points, setPoints, svgRef, handleDown, degenerate } = useInteractiveTriangle({
     A: { x: 300, y: 80 },
     B: { x: 130, y: 320 },
     C: { x: 490, y: 300 },
@@ -1843,6 +1901,7 @@ function OrthocenterDemo() {
           <clipPath id="clip-o"><rect x="0" y="0" width="600" height="410"/></clipPath>
         </defs>
         <rect width="600" height="410" fill="url(#grid-o)"/>
+        {!degenerate && (<>
 
         <g clipPath="url(#clip-o)">
           <ExtendedLine P1={A} P2={fa} stroke="#a435c4" opacity="1" strokeWidth="2.5"/>
@@ -1850,8 +1909,10 @@ function OrthocenterDemo() {
           <ExtendedLine P1={C} P2={fc} stroke="#a435c4" opacity="1" strokeWidth="2.5"/>
         </g>
 
+        </>)}
         <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
                  fill="url(#tri-fill-o)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
+        {!degenerate && (<>
 
         {[
           { foot: fa, side: B, vertex: A },
@@ -1878,9 +1939,11 @@ function OrthocenterDemo() {
           <circle key={i} cx={p.x} cy={p.y} r="5" fill="#a435c4" stroke="#fdfcf7" strokeWidth="2" pointerEvents="none"/>
         ))}
 
+        </>)}
         {['A', 'B', 'C'].map(label =>
           <DraggableVertex key={label} p={points[label]} label={label} centroid={ctr} onDown={handleDown(label)}/>
         )}
+        {!degenerate && (<>
 
         <CenterAngleOverlay kind="H" pts={points} X={H} sel={angSel} color="#a435c4"/>
 
@@ -1899,10 +1962,12 @@ function OrthocenterDemo() {
                 fill="#1a1815" opacity="0.75">макс. ъгъл ≈ {maxAngle.toFixed(0)}°</text>
         </InfoBox>
 
+        </>)}
+        {degenerate && <DegenerateNotice/>}
         <DragHint/>
       </svg>
     </DemoFrame>
-    <CenterAnglePanel kind="H" pts={points} X={H} sel={angSel} setSel={setAngSel}
+    <CenterAnglePanel kind="H" degenerate={degenerate} pts={points} X={H} sel={angSel} setSel={setAngSel}
                       color="#a435c4" setPoints={setPoints} presets={[
       { label: 'остроъгълен',  pts: { A: { x: 300, y: 80 },    B: { x: 130, y: 320 }, C: { x: 490, y: 300 } } },
       { label: String.raw`$\ang A = 90\gr$`,     pts: { A: { x: 245, y: 141.4 }, B: { x: 120, y: 320 }, C: { x: 500, y: 320 } } },
@@ -1918,7 +1983,7 @@ function OrthocenterDemo() {
    ============================================================ */
 
 function EulerDemo() {
-  const { points, svgRef, handleDown } = useInteractiveTriangle({
+  const { points, svgRef, handleDown, degenerate } = useInteractiveTriangle({
     A: { x: 300, y: 80 },
     B: { x: 110, y: 320 },
     C: { x: 490, y: 330 },
@@ -1961,6 +2026,7 @@ function EulerDemo() {
           <clipPath id="clip-e"><rect x="0" y="0" width="600" height="410"/></clipPath>
         </defs>
         <rect width="600" height="410" fill="url(#grid-e)"/>
+        {!degenerate && (<>
 
         <g clipPath="url(#clip-e)">
           {!isEquilateral && (
@@ -1969,16 +2035,18 @@ function EulerDemo() {
           )}
         </g>
 
+        </>)}
         <polygon points={`${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}`}
                  fill="url(#tri-fill-e)" stroke="#1a1815" strokeWidth="3.5" strokeLinejoin="round" pointerEvents="none"/>
 
         {['A', 'B', 'C'].map(label =>
           <DraggableVertex key={label} p={points[label]} label={label} centroid={M} onDown={handleDown(label)}/>
         )}
+        {!degenerate && (<>
 
-        <InteractiveCenter p={O} label="O" color="#1d6fb8" leftSide={O.x < M.x} infoTitle="Описана" infoText="Център на описаната окръжност. Винаги лежи на Правата на Ойлер." />
+        <InteractiveCenter p={O} label="O" color="#1d6fb8" leftSide={O.x < M.x} infoTitle="Описана" infoText="Център на описаната окръжност. Винаги лежи на правата на Ойлер." />
         <InteractiveCenter p={M} label="M" color="#e63946" infoTitle="Медицентър" infoText="Винаги лежи между $O$ и $H$, като дели отсечката $OH$ в отношение $1:2$." />
-        <InteractiveCenter p={H} label="H" color="#a435c4" leftSide={H.x < M.x} infoTitle="Ортоцентър" infoText="Пресечна точка на височините. Винаги лежи на Правата на Ойлер." />
+        <InteractiveCenter p={H} label="H" color="#a435c4" leftSide={H.x < M.x} infoTitle="Ортоцентър" infoText="Пресечна точка на височините. Винаги лежи на правата на Ойлер." />
 
         <InfoBox x={15} y={15} w={205} accent="#1a1815">
           <text x="25" y="33" fontFamily="JetBrains Mono" fontSize="9" fontWeight="700"
@@ -1992,6 +2060,8 @@ function EulerDemo() {
           </text>
         </InfoBox>
 
+        </>)}
+        {degenerate && <DegenerateNotice/>}
         <DragHint/>
       </svg>
     </DemoFrame>
@@ -2201,8 +2271,7 @@ function IsoscelesCase() {
             всички те лежат на оста на симетрия на триъгълника.
           </Property>
           <Property color="#1a1815" title="Колинеарност">
-            Точките $M$, $O$, $I$ и $H$ лежат на тази обща права. Това е специален случай на правата на Ойлер,
-            върху която е и центърът на вписаната окръжност.
+            Точките $M$, $O$, $I$ и $H$ лежат на тази обща права. При равнобедрен неравностранен триъгълник правата на Ойлер съвпада с оста на симетрия. Затова в този специален случай върху нея лежи и центърът $I$ на вписаната окръжност.
           </Property>
           <Property color="#1a1815" title="Равенство на ъглите при основата">
             {String.raw`$\ang CAB = \ang CBA$ — следствие от равенството на бедрата.`}
@@ -2396,7 +2465,7 @@ function EquilateralCase() {
                              width="280" height="200" className="overflow-visible pointer-events-none">
                 <div className="bg-[#fdfcf7] text-[#1a1815] p-5 rounded-xl shadow-[0_15px_35px_-5px_rgba(0,0,0,0.15)] border border-[#1a1815]/10 border-l-4 animate-tooltip-pop"
                      style={{ borderLeftColor: '#1a1815' }}>
-                  <div className="font-mono text-[11px] uppercase tracking-widest mb-3 font-bold" style={{ color: '#1a1815' }}>Общ Център</div>
+                  <div className="font-mono text-[11px] uppercase tracking-widest mb-3 font-bold" style={{ color: '#1a1815' }}>Общ център</div>
                   <div className="font-display text-[16px] leading-relaxed opacity-95">
                     В равностранния триъгълник всички забележителни точки напълно съвпадат в една единствена точка.
                   </div>
@@ -2521,15 +2590,15 @@ const MASTER_QUESTIONS = [
   },
   {
     advanced: true,
-    q: 'Колко на брой са допирателните окръжности на един триъгълник (вписана и външно вписани)?',
+    q: 'Колко на брой са допирателните окръжности на един триъгълник (вписана и външновписани)?',
     options: ['$1$', '$3$', '$4$', '$6$'],
     correct: 2,
     explain: 'Един триъгълник има точно четири допирателни окръжности: една вписана (вътре в триъгълника) ' +
-             'и три външно вписани (всяка срещу един от върховете).'
+             'и три външновписани (всяка срещу един от върховете).'
   },
   {
     advanced: true,
-    q: 'Центърът $I_a$ на външно вписаната окръжност срещу върха $A$ е пресечната точка на:',
+    q: 'Центърът $I_a$ на външновписаната окръжност срещу върха $A$ е пресечната точка на:',
     options: [
       'трите вътрешни ъглополовящи',
       'вътрешната ъглополовяща при $A$ и външните при $B$ и $C$',
@@ -2603,16 +2672,16 @@ const MASTER_QUESTIONS = [
     explain: 'Правата на Ойлер минава през медицентъра $M$, центъра $O$ на описаната окръжност и ортоцентъра $H$.'
   },
   {
-    q: String.raw`В остроъгълния $\triangle ABC$ е дадено $\ang A = 50\gr$. На колко е равен $\ang BOC$, където $O$ е центърът на описаната окръжност?`,
+    q: String.raw`В остроъгълния $\triangle ABC$ е дадено $\ang A = 50\gr$. На колко е равен изпъкналият $\ang BOC$, където $O$ е центърът на описаната окръжност?`,
     options: [String.raw`$50\gr$`, String.raw`$100\gr$`, String.raw`$115\gr$`, String.raw`$130\gr$`],
     correct: 1,
     explain: String.raw`Когато $\ang A$ е остър, $\ang BOC = 2\ang A = 2\cdot 50\gr = 100\gr$. (Отговорът $115\gr = 90\gr + \dfrac{50\gr}{2}$ е $\ang BIC$.)`
   },
   {
-    q: String.raw`В $\triangle ABC$ е дадено $\ang A = 120\gr$. На колко е равен $\ang BOC$?`,
+    q: String.raw`В $\triangle ABC$ е дадено $\ang A = 120\gr$, а $O$ е центърът на описаната окръжност. На колко е равен изпъкналият $\ang BOC$?`,
     options: [String.raw`$240\gr$`, String.raw`$60\gr$`, String.raw`$120\gr$`, String.raw`$150\gr$`],
     correct: 2,
-    explain: String.raw`Когато $\ang A$ е тъп, точките $A$ и $O$ са от различни страни на $BC$ и $\ang BOC = 360\gr - 2\ang A = 360\gr - 240\gr = 120\gr$.`
+    explain: String.raw`Когато $\ang A$ е тъп, точките $A$ и $O$ са от различни страни на $BC$ и изпъкналият $\ang BOC = 360\gr - 2\ang A = 360\gr - 240\gr = 120\gr$. ($240\gr = 2\ang A$ е мярката на неизпъкналия ъгъл $BOC$.)`
   },
   {
     q: String.raw`В $\triangle ABC$ е дадено $\ang A = 60\gr$. На колко е равен $\ang BIC$, където $I$ е центърът на вписаната окръжност?`,
@@ -2679,7 +2748,7 @@ function Quiz() {
           {withAdvanced ? '●' : '○'} ★ включи въпроси за повишен интерес
         </button>
         <span className="font-display text-sm opacity-70">
-          (външно вписани окръжности и правата на Ойлер)
+          (външновписани окръжности и правата на Ойлер)
         </span>
       </div>
       {questions.map((item, i) => (

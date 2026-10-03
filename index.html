@@ -72,11 +72,10 @@ function TriangleLesson() {
     { id: 'centroid',     label: 'Медицентър',     num: '01', color: '#e63946' },
     { id: 'circumcenter', label: 'Описана',        num: '02', color: '#1d6fb8' },
     { id: 'incenter',     label: 'Вписана',        num: '03', color: '#5fb83a' },
-    { id: 'excircles',    label: 'Външновписани', num: '04', color: '#f59100', advanced: true },
-    { id: 'orthocenter',  label: 'Ортоцентър',     num: '05', color: '#a435c4' },
-    { id: 'euler',        label: 'Права на Ойлер', num: '06', color: '#1a1815', advanced: true },
-    { id: 'special',      label: 'Спец. случаи',   num: '07', color: '#f59100' },
-    { id: 'quiz',         label: 'Тест',           num: '08', color: '#1a1815' },
+    { id: 'orthocenter',  label: 'Ортоцентър',     num: '04', color: '#a435c4' },
+    { id: 'special',      label: 'Спец. случаи',   num: '05', color: '#f59100' },
+    { id: 'quiz',         label: 'Самопроверка',   num: '06', color: '#1a1815' },
+    { id: 'curious',      label: 'За любознателните', num: '★', color: '#1a1815' },
   ];
 
   const scrollTo = (id) => {
@@ -459,8 +458,8 @@ function TriangleLesson() {
           <div className="mt-6 max-w-xl">
             <AdvancedBadge/>
             <p className="font-display text-base mt-3 leading-relaxed opacity-85">
-              Разделите, отбелязани със <strong>★</strong> (външновписани окръжности и правата на Ойлер),
-              са <strong>за ученици с повишен интерес</strong> — те надхвърлят задължителния материал.
+              Темите, отбелязани със <strong>★</strong> (външновписани окръжности и правата на Ойлер),
+              са <strong>за ученици с повишен интерес</strong> — ще ги намериш в края на урока, в частта „За любознателните ★“.
             </p>
           </div>
 
@@ -555,22 +554,8 @@ function TriangleLesson() {
       </PointSection>
 
       <PointSection
-        id="excircles"
-        number="04"
-        title="Външновписани окръжности"
-        subtitle="Три окръжности извън триъгълника"
-        accentColor="#f59100"
-        definition="Външновписана окръжност на триъгълник е окръжност, която се допира до една от страните му и до продълженията на другите две страни. Външновписаната срещу върха $A$ окръжност се допира до страната $BC$ и до продълженията на страните $AB$ и $AC$; аналогично за върховете $B$ и $C$. Центровете им са $I_a$, $I_b$, $I_c$, а радиусите — $r_a$, $r_b$, $r_c$."
-        property="Центърът $I_a$ е пресечната точка на вътрешната ъглополовяща при върха $A$ и външните ъглополовящи при върховете $B$ и $C$. Заедно с вписаната, всеки триъгълник има четири допирателни окръжности."
-        formula="$r_a = \dfrac{S}{p - a}$"
-        advanced
-      >
-        <ExcirclesDemo />
-      </PointSection>
-
-      <PointSection
         id="orthocenter"
-        number="05"
+        number="04"
         title="Ортоцентър"
         subtitle="Пресечна точка на височините"
         accentColor="#a435c4"
@@ -590,13 +575,81 @@ function TriangleLesson() {
         <OrthocenterDemo />
       </PointSection>
 
+      {/* ============== СПЕЦИАЛНИ СЛУЧАИ ============== */}
+      <section id="special" className="paper-texture grain py-24 border-t-2 border-[#1a1815]/15">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="font-mono text-xs tracking-widest uppercase opacity-55 mb-6 font-bold">
+            05 · специални случаи
+          </div>
+          <h2 className="font-display font-light leading-[0.9] mb-6"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+            Когато триъгълникът<br/>
+            <span className="font-serif-it italic">е симетричен</span>
+          </h2>
+          <p className="font-display text-lg max-w-2xl mb-12 opacity-85">
+            Симетрията на равнобедрения и равностранния триъгълник кара
+            забележителните точки да се подреждат по особено красив начин.
+          </p>
+          <SpecialCasesDemo />
+        </div>
+      </section>
+
+      {/* ============== ТЕСТ ============== */}
+      <section id="quiz" className="bg-[#e8f1ec] text-[#1a1815] py-24 border-t-2 border-[#1a1815]/15">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="font-mono text-xs tracking-widest uppercase opacity-65 mb-6 font-bold">
+            06 · самопроверка
+          </div>
+          <h2 className="font-display font-light leading-[0.9] mb-12"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+            Провери <span className="font-serif-it italic">себе си</span>
+          </h2>
+          <Quiz pool={MASTER_QUESTIONS.filter(q => !q.advanced)} count={5}/>
+
+          <div className="mt-20 p-6 bg-[#fdfcf7] border-l-4 border-[#1a1815] rounded-r shadow-[0_3px_0_0_rgba(26,24,21,0.12)]">
+            <div className="font-mono text-[10px] tracking-widest uppercase opacity-65 mb-2 font-bold">
+              Искаш ли да продължиш? ★
+            </div>
+            <p className="font-display text-lg leading-relaxed">
+              Основният урок приключи. Ако искаш да научиш още, разгледай две интересни геометрични идеи.
+            </p>
+            <button
+              onClick={() => document.getElementById('curious')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="btn-3d mt-5"
+              style={{ '--accent': '#1a1815', '--accent-dark': '#000000' }}
+            >
+              <span className="btn-3d-num" style={{ '--accent': '#1a1815' }}>★</span>
+              за любознателните
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ============== ЗА ЛЮБОЗНАТЕЛНИТЕ ★ ============== */}
+      <section id="curious" className="paper-texture grain py-24 border-t-2 border-[#1a1815]/15">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="font-mono text-xs tracking-widest uppercase opacity-55 mb-6 font-bold">
+            ★ · допълнителен материал
+          </div>
+          <div className="mb-6"><AdvancedBadge/></div>
+          <h2 className="font-display font-light leading-[0.9] mb-6"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+            За <span className="font-serif-it italic">любознателните</span> ★
+          </h2>
+          <p className="font-display text-lg max-w-2xl opacity-85">
+            Следващите две теми надхвърлят основния урок и са за ученици с повишен интерес:
+            правата на Ойлер и външновписаните окръжности.
+          </p>
+        </div>
+      </section>
+
       {/* ============== ПРАВА НА ОЙЛЕР ============== */}
       <section id="euler" className="paper-texture grain min-h-screen py-24 relative border-t-2 border-[#1a1815]/15">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-12 gap-12 items-center">
             <div className="md:col-span-5">
               <div className="font-mono text-xs tracking-widest uppercase opacity-55 mb-6 font-bold">
-                06 · колинеарност
+                ★ · колинеарност
               </div>
               <div className="mb-6"><AdvancedBadge/></div>
               <h2 className="font-display font-light leading-[0.9]"
@@ -629,38 +682,34 @@ function TriangleLesson() {
         </div>
       </section>
 
-      {/* ============== СПЕЦИАЛНИ СЛУЧАИ ============== */}
-      <section id="special" className="paper-texture grain py-24 border-t-2 border-[#1a1815]/15">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="font-mono text-xs tracking-widest uppercase opacity-55 mb-6 font-bold">
-            07 · специални случаи
+      <PointSection
+        id="excircles"
+        number="★"
+        title="Външновписани окръжности"
+        subtitle="Три окръжности извън триъгълника"
+        accentColor="#f59100"
+        definition="Външновписана окръжност на триъгълник е окръжност, която се допира до една от страните му и до продълженията на другите две страни. Външновписаната срещу върха $A$ окръжност се допира до страната $BC$ и до продълженията на страните $AB$ и $AC$; аналогично за върховете $B$ и $C$. Центровете им са $I_a$, $I_b$, $I_c$, а радиусите — $r_a$, $r_b$, $r_c$."
+        property="Центърът $I_a$ е пресечната точка на вътрешната ъглополовяща при върха $A$ и външните ъглополовящи при върховете $B$ и $C$. Заедно с вписаната, всеки триъгълник има четири допирателни окръжности."
+        formula="$r_a = \dfrac{S}{p - a}$"
+        advanced
+      >
+        <ExcirclesDemo />
+      </PointSection>
+
+      {/* ============== МИНИПРОВЕРКА ★ ============== */}
+      <section id="curious-quiz" className="bg-[#fbf3dc] text-[#1a1815] py-24 border-t-2 border-[#1a1815]/15">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="font-mono text-xs tracking-widest uppercase opacity-65 mb-6 font-bold">
+            ★ · минипроверка
           </div>
-          <h2 className="font-display font-light leading-[0.9] mb-6"
-              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-            Когато триъгълникът<br/>
-            <span className="font-serif-it italic">е симетричен</span>
+          <h2 className="font-display font-light leading-[0.9] mb-12"
+              style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}>
+            Провери се <span className="font-serif-it italic">и тук</span> ★
           </h2>
-          <p className="font-display text-lg max-w-2xl mb-12 opacity-85">
-            Симетрията на равнобедрения и равностранния триъгълник кара
-            забележителните точки да се подреждат по особено красив начин.
-          </p>
-          <SpecialCasesDemo />
+          <Quiz pool={MASTER_QUESTIONS.filter(q => q.advanced)} count={3}/>
         </div>
       </section>
 
-      {/* ============== ТЕСТ ============== */}
-      <section id="quiz" className="bg-[#e8f1ec] text-[#1a1815] py-24 border-t-2 border-[#1a1815]/15">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="font-mono text-xs tracking-widest uppercase opacity-65 mb-6 font-bold">
-            08 · самопроверка
-          </div>
-          <h2 className="font-display font-light leading-[0.9] mb-12"
-              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-            Провери <span className="font-serif-it italic">себе си</span>
-          </h2>
-          <Quiz />
-        </div>
-      </section>
 
       {/* ============== FOOTER ============== */}
       <footer className="bg-[#1a1815] text-[#f4f1ea] py-12 border-t-2 border-[#f4f1ea]/15">
@@ -2709,18 +2758,15 @@ const MASTER_QUESTIONS = [
   }
 ];
 
-function Quiz() {
+function Quiz({ pool, count = 5 }) {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [withAdvanced, setWithAdvanced] = useState(false);
 
-  const loadRandomQuestions = (adv = withAdvanced) => {
-    // Избираме 5 случайни въпроса от списъка (разбъркано);
-    // въпросите ★ влизат само ако е включен режимът за повишен интерес
-    const pool = MASTER_QUESTIONS.filter(q => adv || !q.advanced);
+  const loadRandomQuestions = () => {
+    // Избираме count случайни въпроса от подадената банка (разбъркано)
     const shuffled = [...pool].sort(() => 0.5 - Math.random());
-    setQuestions(shuffled.slice(0, 5));
+    setQuestions(shuffled.slice(0, count));
     setAnswers({});
     setSubmitted(false);
   };
@@ -2729,28 +2775,12 @@ function Quiz() {
     loadRandomQuestions();
   }, []);
 
-  const toggleAdvanced = () => {
-    const next = !withAdvanced;
-    setWithAdvanced(next);
-    loadRandomQuestions(next);
-  };
-
   const score = Object.entries(answers).filter(([i, a]) => questions[i].correct === a).length;
 
   if (questions.length === 0) return null;
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center gap-4">
-        <button onClick={toggleAdvanced}
-                className={`btn-3d-mini ${withAdvanced ? 'active' : ''}`}
-                style={{ '--mini-color': '#1a1815', '--mini-color-dark': '#000000', padding: '10px 16px' }}>
-          {withAdvanced ? '●' : '○'} ★ включи въпроси за повишен интерес
-        </button>
-        <span className="font-display text-sm opacity-70">
-          (външновписани окръжности и правата на Ойлер)
-        </span>
-      </div>
       {questions.map((item, i) => (
         <div key={i} className="border-l-2 border-[#1a1815]/15 pl-6">
           <div className="flex items-baseline gap-3 mb-4">
